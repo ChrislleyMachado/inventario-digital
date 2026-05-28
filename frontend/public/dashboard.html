@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSIS — Dashboard</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>SIGSIS</h2>
+        <p>Gestão de Sistemas Municipais</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item active" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"     class="nav-item" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+
+      <p class="nav-section-title">Sessão</p>
+      <a href="login.html" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>SIGSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- =====================================================
+       MAIN WRAPPER
+       ===================================================== -->
+  <div class="main-wrapper">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1>Dashboard</h1>
+        <p>Visão geral dos sistemas municipais</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content">
+
+      <!-- ---- Stat Cards ---- -->
+      <div class="stats-grid">
+
+        <div class="stat-card blue">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-grid-3x3-gap"></i></div>
+          </div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total de Sistemas</div>
+        </div>
+
+        <div class="stat-card green">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+          </div>
+          <div class="stat-value" id="stat-producao">0</div>
+          <div class="stat-label">Em Produção</div>
+        </div>
+
+        <div class="stat-card orange">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-code-slash"></i></div>
+          </div>
+          <div class="stat-value" id="stat-desenvolvimento">0</div>
+          <div class="stat-label">Em Desenvolvimento</div>
+        </div>
+
+        <div class="stat-card red">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-file-earmark-x"></i></div>
+          </div>
+          <div class="stat-value" id="stat-sem-doc">0</div>
+          <div class="stat-label">Sem Documentação</div>
+        </div>
+
+        <div class="stat-card purple">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+          </div>
+          <div class="stat-value" id="stat-criticos">0</div>
+          <div class="stat-label">Sistemas Críticos</div>
+        </div>
+
+        <div class="stat-card gray">
+          <div class="stat-card-top">
+            <div class="stat-icon"><i class="bi bi-archive"></i></div>
+          </div>
+          <div class="stat-value" id="stat-descontinuados">0</div>
+          <div class="stat-label">Descontinuados</div>
+        </div>
+
+      </div>
+
+      <!-- ---- Resumo visual ---- -->
+      <div class="dashboard-summary">
+
+        <!-- Distribuição por status -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-bar-chart-line"></i> Distribuição por Status</div>
+          </div>
+          <div class="card-body">
+            <div class="status-distribution">
+              <div id="distribution-bars"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sistemas recentes -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-clock-history"></i> Últimas Atualizações</div>
+            <a href="sistemas.html" class="btn btn-secondary btn-sm">Ver todos</a>
+          </div>
+          <div class="activity-list" id="recent-activity">
+            <!-- preenchido por dashboard.js -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ---- Tabela sistemas recentes ---- -->
+      <div class="recent-section">
+        <div class="table-container">
+          <div class="table-toolbar">
+            <div class="card-title"><i class="bi bi-list-ul"></i> Sistemas Cadastrados Recentemente</div>
+            <div class="ml-auto">
+              <a href="sistemas.html" class="btn btn-primary btn-sm">
+                <i class="bi bi-grid-3x3-gap"></i> Ver todos os sistemas
+              </a>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome do Sistema</th>
+                  <th>Secretaria</th>
+                  <th>Status</th>
+                  <th>Data de Implantação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="recent-tbody">
+                <!-- preenchido por dashboard.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      SIGSIS — Sistema de Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp;
+      SEMEG © 2026
+    </footer>
+  </div><!-- /main-wrapper -->
+</div><!-- /app-layout -->
+
+<!-- Overlay mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script>
+/* Preenche a lista de atividades recentes */
+document.addEventListener('DOMContentLoaded', function () {
+  const activities = [
+    { icon: 'bi-plus-circle', color: 'blue',   title: 'SIGCOB — Tributação cadastrado',       sub: 'Secretaria de Finanças', time: 'há 2 dias' },
+    { icon: 'bi-pencil',      color: 'orange',  title: 'Sistema de Patrimônio atualizado',    sub: 'Status: Em Manutenção',   time: 'há 3 dias' },
+    { icon: 'bi-file-earmark-text', color: 'green', title: 'Documentação do SySocial adicionada', sub: 'Manual do usuário v2.1', time: 'há 5 dias' },
+    { icon: 'bi-archive',     color: 'gray',    title: 'INFRASIS OS descontinuado',           sub: 'Substituído pelo novo módulo', time: 'há 8 dias' },
+    { icon: 'bi-people',      color: 'purple',  title: 'Novo usuário cadastrado',             sub: 'Técnico de TI — SEINFRA',  time: 'há 10 dias' },
+  ];
+
+  const container = document.getElementById('recent-activity');
+  if (!container) return;
+  container.innerHTML = activities.map(function (a) {
+    return `<div class="activity-item">
+      <div class="activity-icon ${a.color}"><i class="bi ${a.icon}"></i></div>
+      <div class="activity-info">
+        <strong>${a.title}</strong>
+        <span>${a.sub}</span>
+      </div>
+      <div class="activity-time">${a.time}</div>
+    </div>`;
+  }).join('');
+});
+</script>
+
+</body>
+</html>

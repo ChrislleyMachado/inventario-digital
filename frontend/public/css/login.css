@@ -1,0 +1,235 @@
+/* ================================================================
+   SIGSIS — login.css
+   ================================================================ */
+
+body.login-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1e2a3b 50%, #1e3a6e 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  min-height: 540px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+}
+
+/* ---- Painel Esquerdo ---- */
+.login-left {
+  flex: 1;
+  background: #1e2a3b;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-left-bg-circle1 {
+  position: absolute;
+  bottom: -100px; right: -100px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(26, 86, 219, 0.12);
+  pointer-events: none;
+}
+
+.login-left-bg-circle2 {
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(26, 86, 219, 0.08);
+  pointer-events: none;
+}
+
+.login-logo {
+  width: 80px; height: 80px;
+  background: #1a56db;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(26, 86, 219, 0.5);
+}
+
+.login-sys-name {
+  font-size: 36px;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 3px;
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+
+.login-sys-sub {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin-top: 10px;
+  line-height: 1.5;
+  max-width: 230px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-divider {
+  width: 48px;
+  height: 3px;
+  background: #1a56db;
+  border-radius: 3px;
+  margin: 22px auto;
+  position: relative;
+  z-index: 1;
+}
+
+.login-institution {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.login-institution strong {
+  color: #94a3b8;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* ---- Painel Direito ---- */
+.login-right {
+  flex: 1;
+  background: #ffffff;
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-welcome {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.login-welcome-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 36px;
+  line-height: 1.5;
+}
+
+/* Form */
+.login-form-group {
+  margin-bottom: 18px;
+}
+
+.login-form-group label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #374151;
+  margin-bottom: 7px;
+}
+
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-wrap i {
+  position: absolute;
+  left: 13px;
+  font-size: 17px;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #f8fafc;
+}
+
+.login-input:focus {
+  border-color: #1a56db;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+}
+
+.login-input::placeholder { color: #94a3b8; }
+
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background: #1a56db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  letter-spacing: 0.3px;
+}
+
+.btn-login:hover { background: #1e40af; }
+.btn-login:active { transform: scale(0.99); }
+
+.btn-login i { font-size: 17px; }
+
+/* Footer do form */
+.login-form-footer {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 680px) {
+  .login-container {
+    flex-direction: column;
+    max-width: 420px;
+    min-height: unset;
+  }
+  .login-left { padding: 36px 28px; }
+  .login-right { padding: 36px 28px; }
+  .login-welcome { font-size: 20px; }
+}

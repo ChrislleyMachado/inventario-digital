@@ -1,0 +1,26 @@
+-- ================================================================
+-- SIGSIS — database/seeds.sql
+-- Dados iniciais para desenvolvimento (Etapa 2)
+-- ================================================================
+
+-- Este arquivo será implementado na Etapa 2.
+-- Conterá dados iniciais para:
+--
+-- 1. Usuário administrador padrão
+-- 2. Secretarias municipais
+-- 3. Tipos de status e documentos
+-- 4. Sistemas simulados para teste (os mesmos exibidos na Etapa 1)
+--
+-- Exemplo:
+-- INSERT INTO secretarias (nome, sigla) VALUES
+--   ('Administração', 'SEMAD'),
+--   ('Assistência Social', 'SEMAS'),
+--   ('Educação', 'SEMEC'),
+--   ('Finanças', 'SEMEF'),
+--   ('Governo', 'SEGOV'),
+--   ('Infraestrutura', 'SEINFRA'),
+--   ('Inovação e Tecnologia', 'SEMEG'),
+--   ('Meio Ambiente', 'SEMMA'),
+--   ('Recursos Humanos', 'SEMRH'),
+--   ('Saúde', 'SEMSA'),
+--   ('Transporte', 'SEMTRA');

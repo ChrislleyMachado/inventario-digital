@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSIS — Usuários</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>SIGSIS</h2>
+        <p>Gestão de Sistemas Municipais</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"      class="nav-item active" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+      <p class="nav-section-title">Sessão</p>
+      <a href="login.html" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>SIGSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1>Usuários</h1>
+        <p>Gerenciamento de acesso ao sistema</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="showToast('Cadastro de usuários disponível na Etapa 2', 'info')">
+          <i class="bi bi-person-plus"></i> Novo Usuário
+        </button>
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <h2>Usuários do sistema</h2>
+          <p>Listagem de usuários e seus níveis de acesso</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-primary" onclick="showToast('Cadastro de usuários disponível na Etapa 2', 'info')">
+            <i class="bi bi-person-plus"></i> Novo Usuário
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats rápidos de usuários -->
+      <div class="stats-grid" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); margin-bottom:20px;">
+        <div class="stat-card blue">
+          <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-people"></i></div></div>
+          <div class="stat-value">12</div>
+          <div class="stat-label">Total de Usuários</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-person-check"></i></div></div>
+          <div class="stat-value">10</div>
+          <div class="stat-label">Ativos</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-shield-lock"></i></div></div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">Administradores</div>
+        </div>
+        <div class="stat-card gray">
+          <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-person-dash"></i></div></div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">Inativos</div>
+        </div>
+      </div>
+
+      <!-- Tabela de usuários -->
+      <div class="table-container">
+        <div class="table-toolbar">
+          <div class="search-box" style="flex:1; min-width:200px;">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control" placeholder="Buscar usuário por nome ou e-mail..." id="busca-usuario">
+          </div>
+          <select class="form-control" style="width:auto;" id="filtro-perfil">
+            <option value="">Todos os perfis</option>
+            <option>Administrador</option>
+            <option>Técnico de TI</option>
+            <option>Consulta</option>
+          </select>
+          <select class="form-control" style="width:auto;" id="filtro-ativo">
+            <option value="">Qualquer status</option>
+            <option>Ativo</option>
+            <option>Inativo</option>
+          </select>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Setor</th>
+                <th>Perfil</th>
+                <th>Status</th>
+                <th>Último acesso</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="usuarios-tbody">
+              <!-- Dados simulados -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      SIGSIS — Sistema de Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+<script>
+const USUARIOS = [
+  { nome: 'Carlos Mendes',   email: 'carlos.mendes@semeg.gov.br',      setor: 'SEMEG — TI',        perfil: 'Administrador', ativo: true,  acesso: '2026-05-27', avatar: 'C', cor: '#1a56db' },
+  { nome: 'Maria Santos',    email: 'maria.santos@oriximina.pa.gov.br', setor: 'Assistência Social', perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-26', avatar: 'M', cor: '#057a55' },
+  { nome: 'Pedro Costa',     email: 'pedro.costa@semeg.gov.br',         setor: 'SEMEG — TI',        perfil: 'Administrador', ativo: true,  acesso: '2026-05-27', avatar: 'P', cor: '#6c2bd9' },
+  { nome: 'Ana Lima',        email: 'ana.lima@oriximina.pa.gov.br',     setor: 'Recursos Humanos',  perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-25', avatar: 'A', cor: '#c27803' },
+  { nome: 'Roberto Silva',   email: 'roberto.silva@oriximina.pa.gov.br', setor: 'Administração',    perfil: 'Consulta',      ativo: true,  acesso: '2026-05-20', avatar: 'R', cor: '#0e7490' },
+  { nome: 'Lucia Oliveira',  email: 'lucia.oliveira@oriximina.pa.gov.br', setor: 'Inovação e TI',  perfil: 'Administrador', ativo: true,  acesso: '2026-05-22', avatar: 'L', cor: '#c81e1e' },
+  { nome: 'Diego Rocha',     email: 'diego.rocha@semeg.gov.br',         setor: 'Controladoria',     perfil: 'Técnico de TI', ativo: false, acesso: '2026-03-10', avatar: 'D', cor: '#6b7280' },
+  { nome: 'Sandra Barros',   email: 'sandra.barros@oriximina.pa.gov.br', setor: 'Protocolo',       perfil: 'Consulta',      ativo: true,  acesso: '2026-05-15', avatar: 'S', cor: '#057a55' },
+  { nome: 'Fernando Alves',  email: 'fernando.alves@oriximina.pa.gov.br', setor: 'Patrimônio',     perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-24', avatar: 'F', cor: '#c27803' },
+  { nome: 'Marina Souza',    email: 'marina.souza@oriximina.pa.gov.br', setor: 'Finanças',          perfil: 'Consulta',      ativo: false, acesso: '2026-04-01', avatar: 'M', cor: '#6b7280' },
+  { nome: 'Marcos Vidal',    email: 'marcos.vidal@seinfra.gov.br',      setor: 'SEINFRA',           perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-18', avatar: 'M', cor: '#0e7490' },
+  { nome: 'Patricia Sousa',  email: 'patricia.sousa@oriximina.pa.gov.br', setor: 'Governo',        perfil: 'Consulta',      ativo: true,  acesso: '2026-05-10', avatar: 'P', cor: '#6c2bd9' },
+];
+
+const BADGE_PERFIL = {
+  'Administrador': 'badge-danger',
+  'Técnico de TI': 'badge-primary',
+  'Consulta':      'badge-gray',
+};
+
+document.addEventListener('DOMContentLoaded', renderUsuarios);
+document.getElementById('busca-usuario').addEventListener('input', renderUsuarios);
+document.getElementById('filtro-perfil').addEventListener('change', renderUsuarios);
+document.getElementById('filtro-ativo').addEventListener('change', renderUsuarios);
+
+function renderUsuarios() {
+  var busca  = normalize(document.getElementById('busca-usuario').value);
+  var perfil = document.getElementById('filtro-perfil').value;
+  var ativo  = document.getElementById('filtro-ativo').value;
+
+  var lista = USUARIOS.filter(function (u) {
+    if (busca && !normalize(u.nome + ' ' + u.email).includes(busca)) return false;
+    if (perfil && u.perfil !== perfil) return false;
+    if (ativo === 'Ativo' && !u.ativo) return false;
+    if (ativo === 'Inativo' && u.ativo) return false;
+    return true;
+  });
+
+  var tbody = document.getElementById('usuarios-tbody');
+  tbody.innerHTML = lista.map(function (u) {
+    var badgeCls = BADGE_PERFIL[u.perfil] || 'badge-gray';
+    var statusBadge = u.ativo
+      ? '<span class="badge badge-success">Ativo</span>'
+      : '<span class="badge badge-gray">Inativo</span>';
+    return `<tr>
+      <td>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="user-table-avatar" style="background:${u.cor};">${u.avatar}</div>
+          <span style="font-weight:600;">${u.nome}</span>
+        </div>
+      </td>
+      <td style="color:#64748b;">${u.email}</td>
+      <td>${u.setor}</td>
+      <td><span class="badge ${badgeCls}">${u.perfil}</span></td>
+      <td>${statusBadge}</td>
+      <td style="color:#94a3b8; font-size:12px;">${formatDate(u.acesso)}</td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Edição disponível na Etapa 2', 'info')">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Ação disponível na Etapa 2', 'info')">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

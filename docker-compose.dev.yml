@@ -1,0 +1,78 @@
+version: '3.8'
+
+# ================================================================
+# SIGSIS — Docker Compose para Desenvolvimento
+# ================================================================
+# Uso:
+#   docker compose -f docker-compose.dev.yml up --build
+#
+# Frontend: http://localhost:5500/login.html
+# Backend:  http://localhost:3001/api/health
+# MySQL:    localhost:3306
+# ================================================================
+
+services:
+
+  # ---- Frontend com live-server --------------------------------
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: sigsis-frontend-dev
+    volumes:
+      # Bind mount: alterações salvas no VS Code refletem imediatamente
+      - ./frontend/public:/app
+    ports:
+      - "${FRONTEND_PORT:-5500}:5500"
+    restart: unless-stopped
+
+  # ---- Backend Node.js com nodemon ----------------------------
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: sigsis-backend-dev
+    volumes:
+      # Bind mount do código — nodemon detecta alterações
+      - ./backend:/app
+      # Volume anônimo: preserva node_modules instalados na imagem
+      - /app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MYSQL_HOST: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ---- MySQL 8 ------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: sigsis-mysql-dev
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sigsis_db}
+      MYSQL_USER: ${MYSQL_USER:-sigsis_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sigsis_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    volumes:
+      - sigsis_mysql_dev:/var/lib/mysql
+      # Scripts SQL em database/ rodam automaticamente na 1ª inicialização
+      - ./database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root_password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  sigsis_mysql_dev:
+    name: sigsis_mysql_dev

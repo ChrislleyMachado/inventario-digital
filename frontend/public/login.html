@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSIS — Login</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body class="login-page">
+
+  <div class="login-container">
+
+    <!-- =====================================================
+         PAINEL ESQUERDO — Identidade visual do sistema
+         ===================================================== -->
+    <div class="login-left">
+      <div class="login-left-bg-circle1"></div>
+      <div class="login-left-bg-circle2"></div>
+
+      <div class="login-logo">
+        <i class="bi bi-diagram-3-fill"></i>
+      </div>
+
+      <div class="login-sys-name">SIGSIS</div>
+
+      <div class="login-sys-sub">
+        Sistema de Gestão de Sistemas Municipais
+      </div>
+
+      <div class="login-divider"></div>
+
+      <div class="login-institution">
+        <strong>Prefeitura Municipal de Oriximiná</strong>
+        Secretaria de Eficiência Governamental<br>
+        <small style="font-size:11px; color:#475569;">SEMEG — Tecnologia da Informação</small>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         PAINEL DIREITO — Formulário de acesso
+         ===================================================== -->
+    <div class="login-right">
+
+      <h1 class="login-welcome">Bem-vindo ao SIGSIS</h1>
+      <p class="login-welcome-sub">
+        Inventário Digital de sistemas municipal.
+      </p>
+
+      <form id="login-form" novalidate>
+
+        <div class="login-form-group">
+          <label for="email">E-mail institucional</label>
+          <div class="login-input-wrap">
+            <i class="bi bi-envelope"></i>
+            <input
+              type="email"
+              id="email"
+              class="login-input"
+              placeholder="usuario@prefeitura.gov.br"
+              autocomplete="username"
+            >
+          </div>
+        </div>
+
+        <div class="login-form-group">
+          <label for="senha">Senha</label>
+          <div class="login-input-wrap">
+            <i class="bi bi-lock"></i>
+            <input
+              type="password"
+              id="senha"
+              class="login-input"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="bi bi-box-arrow-in-right"></i>
+          Entrar no Sistema
+        </button>
+
+      </form>
+
+      <div class="login-form-footer">
+        <p>SIGSIS v1.0 &nbsp;·&nbsp; Etapa 1 — Base Visual</p>
+        <p>© 2026 Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

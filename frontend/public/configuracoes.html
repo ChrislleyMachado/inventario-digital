@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSIS — Configurações</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>SIGSIS</h2>
+        <p>Gestão de Sistemas Municipais</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"      class="nav-item" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item active" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+      <p class="nav-section-title">Sessão</p>
+      <a href="login.html" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>SIGSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1>Configurações</h1>
+        <p>Parâmetros e preferências do sistema</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <h2>Configurações do SIGSIS</h2>
+          <p>Parâmetros institucionais e preferências do sistema (implementação completa na Etapa 2)</p>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           DADOS INSTITUCIONAIS
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-building"></i>
+          <h3>Dados Institucionais</h3>
+        </div>
+        <div class="config-section-body">
+
+          <div class="form-grid" style="margin-bottom:20px;">
+            <div class="form-group">
+              <label>Nome do Município</label>
+              <input type="text" class="form-control" value="Oriximiná" readonly>
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <input type="text" class="form-control" value="Pará (PA)" readonly>
+            </div>
+            <div class="form-group">
+              <label>Secretaria Gestora do SIGSIS</label>
+              <input type="text" class="form-control" value="SEMEG — Secretaria de Eficiência Governamental" readonly>
+            </div>
+            <div class="form-group">
+              <label>Ano de implantação do SIGSIS</label>
+              <input type="text" class="form-control" value="2026" readonly>
+            </div>
+          </div>
+
+          <div class="d-flex gap-8">
+            <button class="btn btn-primary" onclick="showToast('Edição de dados institucionais disponível na Etapa 2', 'info')">
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           PADRÃO DO CÓDIGO INTERNO
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-upc-scan"></i>
+          <h3>Padrão do Código Interno</h3>
+        </div>
+        <div class="config-section-body">
+
+          <div style="background:#1e2a3b; border-radius:8px; padding:20px; text-align:center; margin-bottom:20px;">
+            <div style="font-size:10px; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Formato atual</div>
+            <div style="font-family:'Courier New', monospace; font-size:24px; font-weight:700; color:#60a5fa; letter-spacing:2px;">
+              PMO-SIS-2026-0001
+            </div>
+            <div style="font-size:11px; color:#475569; margin-top:8px;">
+              [PREFIXO]-[CATEGORIA]-[ANO]-[SEQUENCIAL]
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-bottom:20px;">
+            <div class="form-group">
+              <label>Prefixo da Prefeitura</label>
+              <input type="text" class="form-control" value="PMO" readonly>
+              <p class="form-hint">Sigla do município (Prefeitura Municipal de Oriximiná)</p>
+            </div>
+            <div class="form-group">
+              <label>Categoria dos sistemas</label>
+              <input type="text" class="form-control" value="SIS" readonly>
+              <p class="form-hint">Identificador da categoria: SIS = Sistema</p>
+            </div>
+            <div class="form-group">
+              <label>Ano de referência</label>
+              <input type="text" class="form-control" value="Automático (ano corrente)" readonly>
+            </div>
+            <div class="form-group">
+              <label>Sequencial (dígitos)</label>
+              <input type="text" class="form-control" value="4 dígitos com zeros à esquerda" readonly>
+            </div>
+          </div>
+
+          <div class="d-flex gap-8">
+            <button class="btn btn-primary" onclick="showToast('Configuração do código disponível na Etapa 2', 'info')">
+              <i class="bi bi-pencil"></i> Alterar Padrão
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           UPLOADS E ARMAZENAMENTO
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-cloud-upload"></i>
+          <h3>Uploads e Armazenamento</h3>
+        </div>
+        <div class="config-section-body">
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Limite de upload por documento</strong>
+              <small>Tamanho máximo permitido por arquivo enviado</small>
+            </div>
+            <div class="config-row-action">
+              <select class="form-control" style="width:auto;" disabled>
+                <option>10 MB</option>
+                <option>20 MB</option>
+                <option>50 MB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Formatos permitidos — Documentação</strong>
+              <small>Tipos de arquivo aceitos para documentação técnica</small>
+            </div>
+            <div class="config-row-action">
+              <span class="text-muted text-sm">PDF, DOC, DOCX, XLS, XLSX</span>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Formatos permitidos — Código-fonte</strong>
+              <small>Tipos de arquivo aceitos para envio de código-fonte</small>
+            </div>
+            <div class="config-row-action">
+              <span class="text-muted text-sm">ZIP, TAR.GZ, RAR</span>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Armazenamento utilizado</strong>
+              <small>Espaço consumido na pasta de uploads do servidor</small>
+            </div>
+            <div class="config-row-action">
+              <span class="text-muted text-sm">— (disponível na Etapa 2)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           TIPOS DE STATUS
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-tags"></i>
+          <h3>Tipos de Status</h3>
+        </div>
+        <div class="config-section-body">
+
+          <p class="text-muted text-sm" style="margin-bottom:16px;">
+            Status disponíveis para classificação dos sistemas cadastrados no inventário.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+              <span class="badge badge-success">Em Produção</span>
+              <span class="text-muted text-sm">Sistema ativo e funcionando em ambiente de produção</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+              <span class="badge badge-primary">Em Desenvolvimento</span>
+              <span class="text-muted text-sm">Sistema em construção, ainda não implantado</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+              <span class="badge badge-warning">Em Manutenção</span>
+              <span class="text-muted text-sm">Sistema temporariamente indisponível para manutenção</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+              <span class="badge badge-cyan">Homologação</span>
+              <span class="text-muted text-sm">Sistema em fase de testes e validação antes de produção</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+              <span class="badge badge-gray">Descontinuado</span>
+              <span class="text-muted text-sm">Sistema desativado e sem suporte ativo</span>
+            </div>
+          </div>
+
+          <div class="mt-16">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Gerenciamento de status disponível na Etapa 2', 'info')">
+              <i class="bi bi-plus"></i> Adicionar Status Personalizado
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           TIPOS DE DOCUMENTOS
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-file-earmark-check"></i>
+          <h3>Tipos de Documentos</h3>
+        </div>
+        <div class="config-section-body">
+
+          <p class="text-muted text-sm" style="margin-bottom:16px;">
+            Categorias de documentos aceitos no inventário de cada sistema.
+          </p>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px;">
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-file-earmark-pdf" style="font-size:20px; color:#c81e1e;"></i>
+              <span style="font-size:13px; font-weight:600;">Manual Técnico</span>
+            </div>
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-file-earmark-word" style="font-size:20px; color:#1a56db;"></i>
+              <span style="font-size:13px; font-weight:600;">Manual do Usuário</span>
+            </div>
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-file-earmark-text" style="font-size:20px; color:#6c2bd9;"></i>
+              <span style="font-size:13px; font-weight:600;">Doc. de Requisitos</span>
+            </div>
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-diagram-2" style="font-size:20px; color:#0e7490;"></i>
+              <span style="font-size:13px; font-weight:600;">Diagrama de BD</span>
+            </div>
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-file-earmark-code" style="font-size:20px; color:#057a55;"></i>
+              <span style="font-size:13px; font-weight:600;">Código-fonte</span>
+            </div>
+            <div style="padding:12px 16px; border:1px solid #e2e8f0; border-radius:8px; display:flex; align-items:center; gap:10px; background:#f8fafc;">
+              <i class="bi bi-shield-check" style="font-size:20px; color:#c27803;"></i>
+              <span style="font-size:13px; font-weight:600;">Auditoria / LGPD</span>
+            </div>
+          </div>
+
+          <div class="mt-16">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Gerenciamento de tipos disponível na Etapa 2', 'info')">
+              <i class="bi bi-plus"></i> Adicionar Tipo
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           NOTIFICAÇÕES
+           ================================================================ -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <i class="bi bi-bell"></i>
+          <h3>Notificações e Alertas</h3>
+        </div>
+        <div class="config-section-body">
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Alertar sobre sistemas sem documentação</strong>
+              <small>Notificar administradores quando um sistema ficar mais de 60 dias sem documentos</small>
+            </div>
+            <div class="config-row-action">
+              <label class="toggle">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>Alertar sobre sistemas críticos sem atualização</strong>
+              <small>Avisar quando sistemas críticos não receberem atualização há mais de 30 dias</small>
+            </div>
+            <div class="config-row-action">
+              <label class="toggle">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-row-info">
+              <strong>E-mail de relatório semanal</strong>
+              <small>Enviar resumo semanal do inventário para administradores</small>
+            </div>
+            <div class="config-row-action">
+              <label class="toggle">
+                <input type="checkbox" disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <p class="text-muted text-sm mt-16">
+            <i class="bi bi-info-circle"></i>
+            A configuração de notificações e envio de e-mails será implementada na Etapa 2 (backend Node.js + SMTP).
+          </p>
+
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      SIGSIS — Sistema de Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

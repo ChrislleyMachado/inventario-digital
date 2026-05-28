@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSIS — Novo Sistema</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>SIGSIS</h2>
+        <p>Gestão de Sistemas Municipais</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item active" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"      class="nav-item" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+      <p class="nav-section-title">Sessão</p>
+      <a href="login.html" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>SIGSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1>Novo Sistema</h1>
+        <p>Cadastrar sistema no inventário municipal</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="sistemas.html" class="btn btn-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <h2>Cadastrar novo sistema</h2>
+          <p>Preencha as informações do sistema para adicioná-lo ao inventário municipal</p>
+        </div>
+      </div>
+
+      <!-- Preview do código interno -->
+      <div class="code-preview-box">
+        <div class="code-preview-label">Código Interno do Sistema</div>
+        <div class="code-preview-value" id="codigo-preview">PMO-SIS-2026-????</div>
+        <div class="code-preview-note">
+          O código definitivo será gerado automaticamente pelo sistema ao salvar (Etapa 2)
+        </div>
+      </div>
+
+      <form id="form-novo-sistema" onsubmit="salvarSistema(event)">
+
+        <!-- ---- Identificação ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-card-text"></i>
+            <h3>Identificação do Sistema</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group full">
+                <label for="nome">Nome do Sistema <span class="req">*</span></label>
+                <input type="text" id="nome" class="form-control" placeholder="Ex: SySocial" required>
+              </div>
+
+              <div class="form-group full">
+                <label for="descricao">Descrição <span class="req">*</span></label>
+                <textarea id="descricao" class="form-control" placeholder="Descreva brevemente o que o sistema faz" rows="3" required></textarea>
+              </div>
+
+              <div class="form-group full">
+                <label for="finalidade">Finalidade</label>
+                <textarea id="finalidade" class="form-control" placeholder="Qual a finalidade e objetivo principal deste sistema?" rows="2"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="tipo">Tipo do Sistema <span class="req">*</span></label>
+                <select id="tipo" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="web">Aplicação Web</option>
+                  <option value="desktop">Aplicação Desktop</option>
+                  <option value="mobile">Aplicação Mobile</option>
+                  <option value="api">API / Serviço</option>
+                  <option value="portal">Portal Público</option>
+                  <option value="erp">ERP / Sistema Integrado</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="status">Status <span class="req">*</span></label>
+                <select id="status" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="producao">Em Produção</option>
+                  <option value="desenvolvimento">Em Desenvolvimento</option>
+                  <option value="homologacao">Em Homologação</option>
+                  <option value="manutencao">Em Manutenção</option>
+                  <option value="descontinuado">Descontinuado</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="criticidade">Criticidade <span class="req">*</span></label>
+                <select id="criticidade" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="critica">Crítica — Sistema essencial</option>
+                  <option value="alta">Alta — Impacto significativo</option>
+                  <option value="media">Média — Operação auxiliar</option>
+                  <option value="baixa">Baixa — Uso interno eventual</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="data_impl">Data de Implantação</label>
+                <input type="date" id="data_impl" class="form-control">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Organização ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-building"></i>
+            <h3>Organização Responsável</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="secretaria">Secretaria Responsável <span class="req">*</span></label>
+                <select id="secretaria" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option>Administração</option>
+                  <option>Assistência Social</option>
+                  <option>Educação</option>
+                  <option>Finanças</option>
+                  <option>Governo</option>
+                  <option>Infraestrutura</option>
+                  <option>Inovação e Tecnologia</option>
+                  <option>Meio Ambiente</option>
+                  <option>Recursos Humanos</option>
+                  <option>Saúde</option>
+                  <option>Transporte</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="setor">Setor Responsável</label>
+                <input type="text" id="setor" class="form-control" placeholder="Ex: DGRH, Protocolo Geral">
+              </div>
+
+              <div class="form-group">
+                <label for="resp_tec">Responsável Técnico <span class="req">*</span></label>
+                <input type="text" id="resp_tec" class="form-control" placeholder="Nome do responsável técnico" required>
+              </div>
+
+              <div class="form-group">
+                <label for="resp_adm">Responsável Administrativo</label>
+                <input type="text" id="resp_adm" class="form-control" placeholder="Nome do responsável administrativo">
+              </div>
+
+              <div class="form-group">
+                <label for="fornecedor">Fornecedor / Desenvolvedor</label>
+                <input type="text" id="fornecedor" class="form-control" placeholder="Ex: Desenvolvimento interno, SEMEG">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Tecnologia ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-cpu"></i>
+            <h3>Tecnologia e Infraestrutura</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group full">
+                <label for="tecnologias">Tecnologias Utilizadas</label>
+                <input type="text" id="tecnologias" class="form-control" placeholder="Ex: HTML, CSS, JavaScript, Node.js, MySQL">
+                <p class="form-hint">Separe as tecnologias por vírgula</p>
+              </div>
+
+              <div class="form-group">
+                <label for="banco_dados">Banco de Dados Utilizado</label>
+                <select id="banco_dados" class="form-control">
+                  <option value="">Selecione...</option>
+                  <option>MySQL</option>
+                  <option>PostgreSQL</option>
+                  <option>SQLite</option>
+                  <option>SQL Server</option>
+                  <option>Oracle</option>
+                  <option>MongoDB</option>
+                  <option>Firebase</option>
+                  <option>Nenhum</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="url_prod">URL de Produção</label>
+                <input type="url" id="url_prod" class="form-control" placeholder="https://sistema.oriximina.pa.gov.br">
+              </div>
+
+              <div class="form-group">
+                <label for="url_homo">URL de Homologação</label>
+                <input type="url" id="url_homo" class="form-control" placeholder="https://hom.sistema.oriximina.pa.gov.br">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Observações ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-chat-text"></i>
+            <h3>Observações</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-group">
+              <label for="observacoes">Observações gerais</label>
+              <textarea id="observacoes" class="form-control" rows="4"
+                placeholder="Informações adicionais, histórico relevante, restrições, dependências externas..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Botões ---- -->
+        <div class="d-flex gap-12" style="justify-content: flex-end; margin-top: 8px;">
+          <a href="sistemas.html" class="btn btn-secondary">
+            <i class="bi bi-x"></i> Cancelar
+          </a>
+          <button type="reset" class="btn btn-secondary" onclick="limparForm()">
+            <i class="bi bi-arrow-counterclockwise"></i> Limpar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-floppy"></i> Salvar Sistema
+          </button>
+        </div>
+
+      </form>
+
+    </main>
+
+    <footer class="app-footer">
+      SIGSIS — Sistema de Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+<script>
+/* Atualiza preview do código ao digitar nome */
+document.getElementById('nome').addEventListener('input', function () {
+  const preview = document.getElementById('codigo-preview');
+  if (this.value.trim()) {
+    preview.textContent = formatCodigoInterno('????');
+  } else {
+    preview.textContent = 'PMO-SIS-2026-????';
+  }
+});
+
+function salvarSistema(e) {
+  e.preventDefault();
+  showToast('Sistema cadastrado com sucesso! (simulado — Etapa 1)', 'success');
+  setTimeout(function () {
+    window.location.href = 'sistemas.html';
+  }, 1800);
+}
+
+function limparForm() {
+  document.getElementById('codigo-preview').textContent = 'PMO-SIS-2026-????';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+-- ================================================================
+-- SIGSIS — database/schema.sql
+-- Estrutura do banco de dados (Etapa 2)
+--
+-- Este arquivo será implementado na Etapa 2 com a modelagem
+-- completa do banco MySQL para o SIGSIS.
+-- ================================================================
+
+-- Tabelas previstas para Etapa 2:
+--
+-- usuarios         — Usuários do sistema e controle de acesso
+-- sistemas         — Inventário de sistemas municipais
+-- documentos       — Arquivos de documentação vinculados aos sistemas
+-- versoes          — Histórico de versões de cada sistema
+-- responsaveis     — Responsáveis técnicos e administrativos
+-- historico        — Log de alterações (auditoria)
+-- tipos_status     — Tipos de status personalizáveis
+-- tipos_documentos — Tipos de documentos aceitos
+-- secretarias      — Secretarias da prefeitura
+
+-- Exemplo de estrutura (a ser desenvolvida na Etapa 2):
+--
+-- CREATE TABLE sistemas (
+--   id              INT AUTO_INCREMENT PRIMARY KEY,
+--   codigo          VARCHAR(20) UNIQUE NOT NULL,
+--   nome            VARCHAR(150) NOT NULL,
+--   descricao       TEXT,
+--   finalidade      TEXT,
+--   tipo            ENUM('web','desktop','mobile','api','portal','erp','outro'),
+--   status          ENUM('producao','desenvolvimento','homologacao','manutencao','descontinuado'),
+--   criticidade     ENUM('critica','alta','media','baixa'),
+--   secretaria_id   INT,
+--   setor           VARCHAR(100),
+--   tecnologias     TEXT,
+--   banco_dados     VARCHAR(100),
+--   url_producao    VARCHAR(255),
+--   url_homologacao VARCHAR(255),
+--   fornecedor      VARCHAR(150),
+--   data_implantacao DATE,
+--   observacoes     TEXT,
+--   criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--   atualizado_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   criado_por      INT,
+--   FOREIGN KEY (secretaria_id) REFERENCES secretarias(id),
+--   FOREIGN KEY (criado_por) REFERENCES usuarios(id)
+-- );

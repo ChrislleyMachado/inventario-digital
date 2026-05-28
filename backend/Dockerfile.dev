@@ -1,0 +1,10 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instala dependências (incluindo nodemon)
+# O código real vem via bind mount em runtime
+COPY package*.json ./
+RUN npm install
+
+CMD ["npm", "run", "dev"]
