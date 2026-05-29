@@ -4,79 +4,7 @@
 
 /* ---- Resumo rápido ---- */
 .dashboard-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
   margin-top: 24px;
-}
-
-/* ---- Tabela recentes ---- */
-.recent-section {
-  margin-top: 24px;
-}
-
-.recent-section .card-header {
-  justify-content: space-between;
-}
-
-/* ---- Lista de atividade ---- */
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.activity-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  transition: background var(--transition);
-}
-
-.activity-item:last-child { border-bottom: none; }
-.activity-item:hover { background: #f8fafc; }
-
-.activity-icon {
-  width: 36px; height: 36px;
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.activity-icon.blue   { background: var(--primary-light); color: var(--primary); }
-.activity-icon.green  { background: var(--success-light); color: var(--success); }
-.activity-icon.orange { background: var(--warning-light); color: var(--warning); }
-.activity-icon.red    { background: var(--danger-light);  color: var(--danger); }
-.activity-icon.purple { background: var(--purple-light);  color: var(--purple); }
-
-.activity-info { flex: 1; min-width: 0; }
-
-.activity-info strong {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.3;
-}
-
-.activity-info span {
-  font-size: 11.5px;
-  color: var(--muted);
-  margin-top: 2px;
-  display: block;
-}
-
-.activity-time {
-  font-size: 11px;
-  color: var(--light);
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding-top: 2px;
 }
 
 /* ---- Distribuição por status (barra visual) ---- */
@@ -125,9 +53,30 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--muted);
-  width: 28px;
+  width: 60px;
   text-align: right;
   flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.status-bar-pct {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--light);
+}
+
+.distribution-total {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.distribution-total strong {
+  color: var(--text);
+  font-weight: 700;
 }
 
 /* ---- Info box ---- */
@@ -159,8 +108,5 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
-  .dashboard-summary {
-    grid-template-columns: 1fr;
-  }
   .status-bar-label { width: 120px; }
 }

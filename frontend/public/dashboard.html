@@ -20,7 +20,7 @@
       <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
       <div class="sidebar-brand-text">
         <h2>SIGSIS</h2>
-        <p>Gestão de Sistemas Municipais</p>
+        <p>Gestão de Sistemas</p>
       </div>
     </div>
 
@@ -152,47 +152,6 @@
           </div>
         </div>
 
-        <!-- Sistemas recentes -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="bi bi-clock-history"></i> Últimas Atualizações</div>
-            <a href="sistemas.html" class="btn btn-secondary btn-sm">Ver todos</a>
-          </div>
-          <div class="activity-list" id="recent-activity">
-            <!-- preenchido por dashboard.js -->
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ---- Tabela sistemas recentes ---- -->
-      <div class="recent-section">
-        <div class="table-container">
-          <div class="table-toolbar">
-            <div class="card-title"><i class="bi bi-list-ul"></i> Sistemas Cadastrados Recentemente</div>
-            <div class="ml-auto">
-              <a href="sistemas.html" class="btn btn-primary btn-sm">
-                <i class="bi bi-grid-3x3-gap"></i> Ver todos os sistemas
-              </a>
-            </div>
-          </div>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nome do Sistema</th>
-                  <th>Secretaria</th>
-                  <th>Status</th>
-                  <th>Data de Implantação</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody id="recent-tbody">
-                <!-- preenchido por dashboard.js -->
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
     </main>
@@ -211,32 +170,6 @@
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script src="js/dashboard.js"></script>
-
-<script>
-/* Preenche a lista de atividades recentes */
-document.addEventListener('DOMContentLoaded', function () {
-  const activities = [
-    { icon: 'bi-plus-circle', color: 'blue',   title: 'SIGCOB — Tributação cadastrado',       sub: 'Secretaria de Finanças', time: 'há 2 dias' },
-    { icon: 'bi-pencil',      color: 'orange',  title: 'Sistema de Patrimônio atualizado',    sub: 'Status: Em Manutenção',   time: 'há 3 dias' },
-    { icon: 'bi-file-earmark-text', color: 'green', title: 'Documentação do SySocial adicionada', sub: 'Manual do usuário v2.1', time: 'há 5 dias' },
-    { icon: 'bi-archive',     color: 'gray',    title: 'INFRASIS OS descontinuado',           sub: 'Substituído pelo novo módulo', time: 'há 8 dias' },
-    { icon: 'bi-people',      color: 'purple',  title: 'Novo usuário cadastrado',             sub: 'Técnico de TI — SEINFRA',  time: 'há 10 dias' },
-  ];
-
-  const container = document.getElementById('recent-activity');
-  if (!container) return;
-  container.innerHTML = activities.map(function (a) {
-    return `<div class="activity-item">
-      <div class="activity-icon ${a.color}"><i class="bi ${a.icon}"></i></div>
-      <div class="activity-info">
-        <strong>${a.title}</strong>
-        <span>${a.sub}</span>
-      </div>
-      <div class="activity-time">${a.time}</div>
-    </div>`;
-  }).join('');
-});
-</script>
 
 </body>
 </html>

@@ -5,7 +5,6 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   animateStats();
-  renderRecentSystems();
   renderDistribution();
 });
 
@@ -63,35 +62,13 @@ function animateStats() {
 }
 
 /**
- * Renderiza a tabela de sistemas recentes
- */
-function renderRecentSystems() {
-  const tbody = document.getElementById('recent-tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = RECENT_SYSTEMS.map(function (s) {
-    return `<tr>
-      <td>
-        <strong>${s.nome}</strong>
-      </td>
-      <td>${s.secretaria}</td>
-      <td>${statusBadge(s.status)}</td>
-      <td>${formatDate(s.data)}</td>
-      <td>
-        <a href="detalhes-sistema.html" class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-eye"></i> Ver
-        </a>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-/**
  * Renderiza as barras de distribuição por status
  */
 function renderDistribution() {
   const container = document.getElementById('distribution-bars');
   if (!container) return;
+
+  const total = DISTRIBUTION[0].total;
 
   container.innerHTML = DISTRIBUTION.map(function (item) {
     const pct = Math.round((item.value / item.total) * 100);
@@ -100,9 +77,15 @@ function renderDistribution() {
       <div class="status-bar-track">
         <div class="status-bar-fill ${item.color}" style="width: 0%" data-width="${pct}%"></div>
       </div>
-      <div class="status-bar-count">${item.value}</div>
+      <div class="status-bar-count">${item.value} <span class="status-bar-pct">${pct}%</span></div>
     </div>`;
   }).join('');
+
+  container.insertAdjacentHTML('beforeend', `
+    <div class="distribution-total">
+      Total de sistemas cadastrados: <strong>${total}</strong>
+    </div>
+  `);
 
   /* Anima as barras após render */
   setTimeout(function () {

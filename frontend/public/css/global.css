@@ -719,6 +719,46 @@ textarea.form-control {
 .fw-700 { font-weight: 700; }
 .w-full { width: 100%; }
 
+/* ================================================================
+   AUTOCOMPLETE
+   ================================================================ */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 500;
+  list-style: none;
+  padding: 4px 0;
+  margin: 0;
+}
+
+.autocomplete-list.open { display: block; }
+
+.autocomplete-item {
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
 /* Divider */
 .divider {
   border: none;

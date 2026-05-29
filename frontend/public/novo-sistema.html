@@ -18,7 +18,7 @@
       <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
       <div class="sidebar-brand-text">
         <h2>SIGSIS</h2>
-        <p>Gestão de Sistemas Municipais</p>
+        <p>Gestão de Sistemas</p>
       </div>
     </div>
     <nav class="sidebar-nav">
@@ -176,20 +176,11 @@
 
               <div class="form-group">
                 <label for="secretaria">Secretaria Responsável <span class="req">*</span></label>
-                <select id="secretaria" class="form-control" required>
-                  <option value="">Selecione...</option>
-                  <option>Administração</option>
-                  <option>Assistência Social</option>
-                  <option>Educação</option>
-                  <option>Finanças</option>
-                  <option>Governo</option>
-                  <option>Infraestrutura</option>
-                  <option>Inovação e Tecnologia</option>
-                  <option>Meio Ambiente</option>
-                  <option>Recursos Humanos</option>
-                  <option>Saúde</option>
-                  <option>Transporte</option>
-                </select>
+                <div class="autocomplete-wrapper">
+                  <input type="text" id="secretaria" class="form-control"
+                    placeholder="Digite para buscar a secretaria..." autocomplete="off">
+                  <ul class="autocomplete-list"></ul>
+                </div>
               </div>
 
               <div class="form-group">
@@ -305,6 +296,8 @@
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script>
+createAutocomplete(document.getElementById('secretaria'), SECRETARIAS);
+
 /* Atualiza preview do código ao digitar nome */
 document.getElementById('nome').addEventListener('input', function () {
   const preview = document.getElementById('codigo-preview');

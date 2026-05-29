@@ -43,6 +43,16 @@
 
 .filter-select:focus { border-color: var(--primary); outline: none; }
 
+.autocomplete-filter {
+  min-width: 220px;
+}
+
+.filter-input-sec {
+  padding: 8px 12px;
+  font-size: 13px;
+  height: 100%;
+}
+
 .filter-count {
   font-size: 12px;
   color: var(--muted);

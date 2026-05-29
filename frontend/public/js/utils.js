@@ -94,6 +94,110 @@ function normalize(str) {
     .replace(/[̀-ͯ]/g, '');
 }
 
+/* Lista oficial de secretarias municipais */
+const SECRETARIAS = [
+  'Assessoria de Controle Interno',
+  'Gabinete do Prefeito',
+  'Procuradoria Geral do Município',
+  'Secretaria de Integração Municipal',
+  'Secretaria Municipal de Agricultura e Abastecimento – SEMAGRI',
+  'Secretaria Municipal de Assistência Social – SMAS',
+  'Secretaria Municipal de Comunicação – SEMCO',
+  'Secretaria Municipal de Cultura – SEMC',
+  'Secretaria Municipal de Educação – SEMED',
+  'Secretaria Municipal de Eficiência Governamental – SEMEG',
+  'Secretaria Municipal de Finanças e Desenvolvimento Econômico – SEMFIDE',
+  'Secretaria Municipal de Infraestrutura – SEINFRA',
+  'Secretaria Municipal da Juventude – SEMJU',
+  'Secretaria Municipal de Meio Ambiente e Mineração – SEMMA',
+  'Secretaria Municipal de Obras Públicas e Habitação – SEMOPH',
+  'Secretaria Municipal de Planejamento e Administração – SEMPLAD',
+  'Secretaria Municipal de Promoção da Igualdade Racial e dos Direitos Humanos – SEMPIRDH',
+  'Secretaria Municipal de Saúde – SMS',
+  'Secretaria Municipal de Segurança Pública e Defesa Social – SEMUSP',
+  'Secretaria Municipal do Esporte – SEMESP',
+];
+
+/**
+ * Cria um campo de autocomplete sobre um <input> dentro de .autocomplete-wrapper.
+ * @param {HTMLInputElement} inputEl  - o campo de texto
+ * @param {string[]} options          - lista de opções
+ * @param {Function} [onChange]       - chamado com o valor após seleção ou limpeza
+ */
+function createAutocomplete(inputEl, options, onChange) {
+  const wrapper = inputEl.closest('.autocomplete-wrapper');
+  const list    = wrapper.querySelector('.autocomplete-list');
+  let activeIdx = -1;
+
+  function render(items) {
+    list.innerHTML = '';
+    activeIdx = -1;
+    if (!items.length) { list.classList.remove('open'); return; }
+    items.forEach(function (item) {
+      const li = document.createElement('li');
+      li.className = 'autocomplete-item';
+      li.textContent = item;
+      li.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        pick(item);
+      });
+      list.appendChild(li);
+    });
+    list.classList.add('open');
+  }
+
+  function pick(value) {
+    inputEl.value = value;
+    list.classList.remove('open');
+    activeIdx = -1;
+    if (onChange) onChange(value);
+  }
+
+  function filtered(q) {
+    if (!q) return options;
+    const n = normalize(q);
+    return options.filter(function (o) { return normalize(o).includes(n); });
+  }
+
+  function setActive(idx) {
+    const items = list.querySelectorAll('.autocomplete-item');
+    items.forEach(function (el, i) { el.classList.toggle('active', i === idx); });
+    if (items[idx]) items[idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  inputEl.addEventListener('input', function () {
+    render(filtered(this.value));
+    if (!this.value && onChange) onChange('');
+  });
+
+  inputEl.addEventListener('focus', function () {
+    render(filtered(this.value));
+  });
+
+  inputEl.addEventListener('blur', function () {
+    setTimeout(function () { list.classList.remove('open'); activeIdx = -1; }, 150);
+  });
+
+  inputEl.addEventListener('keydown', function (e) {
+    if (!list.classList.contains('open')) return;
+    const items = list.querySelectorAll('.autocomplete-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      setActive(activeIdx);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, 0);
+      setActive(activeIdx);
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault();
+      pick(items[activeIdx].textContent);
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open');
+    }
+  });
+}
+
 /**
  * Exibe uma notificação toast simples
  */

@@ -110,16 +110,11 @@
             <option value="descontinuado">Descontinuado</option>
           </select>
 
-          <select id="filtro-secretaria" class="filter-select">
-            <option value="">Todas as secretarias</option>
-            <option value="Assistência Social">Assistência Social</option>
-            <option value="Recursos Humanos">Recursos Humanos</option>
-            <option value="Inovação e Tecnologia">Inovação e Tecnologia</option>
-            <option value="Administração">Administração</option>
-            <option value="Governo">Governo</option>
-            <option value="Finanças">Finanças</option>
-            <option value="Infraestrutura">Infraestrutura</option>
-          </select>
+          <div class="autocomplete-wrapper autocomplete-filter">
+            <input type="text" id="filtro-secretaria" class="form-control filter-input-sec"
+              placeholder="Filtrar por secretaria..." autocomplete="off">
+            <ul class="autocomplete-list"></ul>
+          </div>
 
           <select id="filtro-criticidade" class="filter-select">
             <option value="">Qualquer criticidade</option>
@@ -178,5 +173,12 @@
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script src="js/sistemas.js"></script>
+<script>
+createAutocomplete(
+  document.getElementById('filtro-secretaria'),
+  SECRETARIAS,
+  function () { applyFilters(); }
+);
+</script>
 </body>
 </html>
