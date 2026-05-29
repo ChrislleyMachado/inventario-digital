@@ -59,7 +59,7 @@ const SISTEMAS_DATA = [
     nome:          'Sistema de Patrimônio',
     descricao:     'Controle e gestão de bens patrimoniais municipais',
     secretaria:    'Secretaria Municipal de Planejamento e Administração – SEMPLAD',
-    status:        'manutencao',
+    status:        'homologacao',
     criticidade:   'media',
     tecnologias:   ['PHP', 'JavaScript', 'MySQL'],
     responsavel:   'Fernando Alves',

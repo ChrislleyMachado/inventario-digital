@@ -23,15 +23,14 @@ const RECENT_SYSTEMS = [
   { nome: 'Banco de Talentos',           secretaria: 'Recursos Humanos',      status: 'desenvolvimento', data: '2026-05-18' },
   { nome: 'Portal de Projetos Inovadores', secretaria: 'Inovação e Tecnologia', status: 'producao',    data: '2026-05-15' },
   { nome: 'Sistema de Protocolo',        secretaria: 'Administração',         status: 'producao',      data: '2026-05-10' },
-  { nome: 'Sistema de Patrimônio',       secretaria: 'Administração',         status: 'manutencao',    data: '2026-05-05' },
+  { nome: 'Sistema de Patrimônio',       secretaria: 'Administração',         status: 'homologacao',   data: '2026-05-05' },
 ];
 
 const DISTRIBUTION = [
-  { label: 'Em Produção',      value: 28, total: 47, color: 'green' },
-  { label: 'Em Desenvolvimento', value: 9, total: 47, color: 'blue'  },
-  { label: 'Em Manutenção',    value: 5,  total: 47, color: 'orange' },
-  { label: 'Descontinuados',   value: 4,  total: 47, color: 'gray'   },
-  { label: 'Críticos',         value: 6,  total: 47, color: 'red'    },
+  { label: 'Desenvolvimento', value: 9,  total: 47, color: 'blue'  },
+  { label: 'Homologação',     value: 6,  total: 47, color: 'cyan'  },
+  { label: 'Ativo',           value: 28, total: 47, color: 'green' },
+  { label: 'Descontinuado',   value: 4,  total: 47, color: 'gray'  },
 ];
 
 /**

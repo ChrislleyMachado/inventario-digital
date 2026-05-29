@@ -48,9 +48,8 @@ function formatCodigoInterno(seq, ano) {
  */
 function statusBadge(status) {
   const map = {
-    producao:      { label: 'Em Produção',      cls: 'badge-success' },
-    desenvolvimento: { label: 'Em Desenvolvimento', cls: 'badge-primary' },
-    manutencao:    { label: 'Manutenção',        cls: 'badge-warning' },
+    producao:      { label: 'Ativo',           cls: 'badge-success' },
+    desenvolvimento: { label: 'Desenvolvimento', cls: 'badge-primary' },
     homologacao:   { label: 'Homologação',       cls: 'badge-cyan'    },
     descontinuado: { label: 'Descontinuado',     cls: 'badge-gray'    },
     critico:       { label: 'Crítico',           cls: 'badge-danger'  },
