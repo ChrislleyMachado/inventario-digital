@@ -45,6 +45,7 @@
 
 .status-bar-fill.green  { background: var(--success); }
 .status-bar-fill.blue   { background: var(--primary); }
+.status-bar-fill.cyan   { background: #0891b2; }
 .status-bar-fill.orange { background: var(--warning); }
 .status-bar-fill.red    { background: var(--danger); }
 .status-bar-fill.gray   { background: var(--gray); }

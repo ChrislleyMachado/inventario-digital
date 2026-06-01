@@ -1,68 +1,58 @@
-/**
- * SIGSIS — backend/src/server.js
- * Servidor Express — Estrutura inicial (Etapa 1)
- *
- * Etapa 2 irá implementar:
- *   - Conexão com MySQL via mysql2
- *   - Autenticação JWT (POST /api/auth/login)
- *   - CRUD de sistemas (GET|POST|PUT|DELETE /api/sistemas)
- *   - CRUD de usuários (GET|POST|PUT|DELETE /api/usuarios)
- *   - Upload de documentos (POST /api/documentos)
- *   - Rota de dashboard (GET /api/dashboard)
- */
+require('dotenv').config();
 
 const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
-// const dotenv  = require('dotenv');
-// dotenv.config();
+const { initDB } = require('./config/db');
 
 const app  = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 /* ---- Middlewares ---- */
-app.use(cors());
+const allowedOrigins = ['http://localhost:5500', 'http://127.0.0.1:5500'];
+app.use(cors({
+  origin: (origin, cb) => cb(null, !origin || allowedOrigins.includes(origin)),
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ---- Servir frontend estático ---- */
 app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
+/* ---- Rotas da API ---- */
+app.use('/api/auth',      require('./routes/auth.routes'));
+app.use('/api/sistemas',  require('./routes/sistemas.routes'));
+app.use('/api/usuarios',  require('./routes/usuarios.routes'));
+app.use('/api/dashboard', require('./routes/dashboard.routes'));
+
 /* ---- Rota raiz ---- */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/public/login.html'));
 });
 
-/* ================================================================
-   ROTAS DA API — Serão implementadas na Etapa 2
-   ================================================================ */
-
-// app.use('/api/auth',       require('./routes/auth.routes'));
-// app.use('/api/sistemas',   require('./routes/sistemas.routes'));
-// app.use('/api/usuarios',   require('./routes/usuarios.routes'));
-// app.use('/api/documentos', require('./routes/documentos.routes'));
-// app.use('/api/dashboard',  require('./routes/dashboard.routes'));
-
-/* ---- Health check (usado pelo Docker e monitoramento) ---- */
+/* ---- Health check ---- */
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', uptime: process.uptime() });
+  res.json({ status: 'ok', uptime: process.uptime(), etapa: 2 });
 });
 
-/* ---- Status da aplicação ---- */
-app.get('/api/status', (req, res) => {
-  res.json({
-    sistema: 'SIGSIS',
-    versao:  '1.0.0',
-    etapa:   1,
-    status:  'online',
-    mensagem: 'Backend estrutural — Etapa 1. Funcionalidades completas disponíveis na Etapa 2.',
+/* ---- Tratamento de erros global ---- */
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ erro: 'Erro interno do servidor' });
+});
+
+/* ---- Inicializa banco e depois o servidor ---- */
+initDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`SIGSIS rodando em http://localhost:${PORT}`);
+      console.log(`Etapa 2 — Backend completo com MySQL`);
+    });
+  })
+  .catch(err => {
+    console.error('Falha ao conectar ao banco:', err.message);
+    process.exit(1);
   });
-});
-
-/* ---- Inicializa servidor ---- */
-app.listen(PORT, () => {
-  console.log(`SIGSIS rodando em http://localhost:${PORT}`);
-  console.log(`Etapa 1 — Base visual. Backend completo na Etapa 2.`);
-});
 
 module.exports = app;

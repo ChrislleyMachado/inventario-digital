@@ -213,7 +213,66 @@
           </div>
         </div>
 
-        <!-- ---- Tecnologia ---- -->
+        <!-- ---- Contrato e Aquisição ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-file-earmark-text"></i>
+            <h3>Contrato e Aquisição</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="origem">Origem do Sistema <span class="req">*</span></label>
+                <select id="origem" class="form-control" required onchange="toggleCamposContrato()">
+                  <option value="">Selecione...</option>
+                  <option value="interno">Desenvolvimento Interno — SEMEG</option>
+                  <option value="licitacao">Licitação / Contrato</option>
+                  <option value="convenio">Convênio / Parceria</option>
+                  <option value="cessao">Cessão / Doação</option>
+                  <option value="outro">Outro</option>
+                </select>
+                <p class="form-hint">Informe como este sistema foi obtido ou desenvolvido</p>
+              </div>
+
+              <div class="form-group">
+                <label for="versao_atual">Versão Atual</label>
+                <input type="text" id="versao_atual" class="form-control" placeholder="Ex: 2.1.0, 2024.3">
+              </div>
+
+              <!-- Campos visíveis apenas quando a origem NÃO é desenvolvimento interno -->
+              <div id="bloco-contrato" style="display:none; grid-column:1/-1;">
+              <div class="form-grid">
+
+                <div class="form-group">
+                  <label for="contrato_numero">Número do Contrato / Processo</label>
+                  <input type="text" id="contrato_numero" class="form-control" placeholder="Ex: Contrato 012/2023 — Proc. 0234/2023">
+                </div>
+
+                <div class="form-group">
+                  <label for="contrato_valor">Valor do Contrato (R$)</label>
+                  <input type="number" id="contrato_valor" class="form-control" placeholder="Ex: 48000.00" min="0" step="0.01">
+                  <p class="form-hint">Valor total do contrato ou licença</p>
+                </div>
+
+                <div class="form-group">
+                  <label for="contrato_inicio">Vigência — Início</label>
+                  <input type="date" id="contrato_inicio" class="form-control">
+                </div>
+
+                <div class="form-group">
+                  <label for="contrato_fim">Vigência — Fim</label>
+                  <input type="date" id="contrato_fim" class="form-control" oninput="alertaVigencia()">
+                  <p class="form-hint" id="alerta-vigencia"></p>
+                </div>
+
+              </div></div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Tecnologia e Infraestrutura ---- -->
         <div class="form-section">
           <div class="form-section-header">
             <i class="bi bi-cpu"></i>
@@ -241,6 +300,28 @@
                   <option>Firebase</option>
                   <option>Nenhum</option>
                   <option>Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="hospedagem">Ambiente de Hospedagem</label>
+                <select id="hospedagem" class="form-control">
+                  <option value="">Selecione...</option>
+                  <option value="servidor_proprio">Servidor Próprio da Prefeitura</option>
+                  <option value="nuvem">Nuvem (AWS, Azure, Google Cloud...)</option>
+                  <option value="datacenter">Data Center Terceirizado</option>
+                  <option value="contratada">Hospedado pela Empresa Contratada</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="acesso">Tipo de Acesso</label>
+                <select id="acesso" class="form-control">
+                  <option value="">Selecione...</option>
+                  <option value="intranet">Somente Intranet (rede interna)</option>
+                  <option value="internet">Acessível pela Internet</option>
+                  <option value="ambos">Intranet e Internet</option>
                 </select>
               </div>
 
@@ -299,34 +380,111 @@
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+<script src="js/api.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script>
+if (!requireAuth()) { /* redireciona para login */ }
+preencherTopbarUsuario();
+
 createAutocomplete(document.getElementById('secretaria'), SECRETARIAS);
 
-/* Preenche data de registro com hoje */
 document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
 
-/* Atualiza preview do código ao digitar nome */
 document.getElementById('nome').addEventListener('input', function () {
   const preview = document.getElementById('codigo-preview');
-  if (this.value.trim()) {
-    preview.textContent = formatCodigoInterno('????');
-  } else {
-    preview.textContent = 'PMO-SIS-2026-????';
-  }
+  const ano = new Date().getFullYear();
+  preview.textContent = this.value.trim() ? `PMO-SIS-${ano}-????` : `PMO-SIS-${ano}-????`;
 });
 
-function salvarSistema(e) {
+async function salvarSistema(e) {
   e.preventDefault();
-  showToast('Sistema cadastrado com sucesso! (simulado — Etapa 1)', 'success');
-  setTimeout(function () {
-    window.location.href = 'sistemas.html';
-  }, 1800);
+  const btn = e.submitter || document.querySelector('[type="submit"]');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
+
+  const tecStr = document.getElementById('tecnologias').value;
+
+  const payload = {
+    nome:             document.getElementById('nome').value.trim(),
+    descricao:        document.getElementById('descricao').value.trim(),
+    finalidade:       document.getElementById('finalidade').value.trim(),
+    tipo:             document.getElementById('tipo').value,
+    status:           document.getElementById('status').value,
+    criticidade:      document.getElementById('criticidade').value,
+    secretaria:       document.getElementById('secretaria').value.trim(),
+    setor:            document.getElementById('setor').value.trim(),
+    resp_tec:         document.getElementById('resp_tec').value.trim(),
+    resp_adm:         document.getElementById('resp_adm').value.trim(),
+    fornecedor:       document.getElementById('fornecedor').value.trim(),
+    tecnologias:      tecStr ? tecStr.split(',').map(t => t.trim()).filter(Boolean) : [],
+    banco_dados:      document.getElementById('banco_dados').value,
+    url_producao:     document.getElementById('url_prod').value.trim(),
+    url_homologacao:  document.getElementById('url_homo').value.trim(),
+    data_implantacao: document.getElementById('data_impl').value || null,
+    observacoes:      document.getElementById('observacoes').value.trim(),
+  };
+
+  try {
+    const res = await apiFetch('/api/sistemas', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (!res) return;
+
+    showToast(`Sistema "${res.nome}" cadastrado com sucesso! Código: ${res.codigo}`, 'success');
+    setTimeout(function () { window.location.href = 'sistemas.html'; }, 1800);
+  } catch (err) {
+    showToast(err.message || 'Erro ao salvar sistema', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-floppy"></i> Salvar Sistema';
+  }
+}
+
+function toggleCamposContrato() {
+  const origem = document.getElementById('origem').value;
+  const bloco  = document.getElementById('bloco-contrato');
+  bloco.style.display = (origem && origem !== 'interno') ? 'block' : 'none';
+  if (bloco.style.display === 'none') {
+    ['contrato_numero','contrato_valor','contrato_inicio','contrato_fim'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('alerta-vigencia').textContent = '';
+  }
+}
+
+function alertaVigencia() {
+  const fim    = document.getElementById('contrato_fim').value;
+  const aviso  = document.getElementById('alerta-vigencia');
+  if (!fim) { aviso.textContent = ''; return; }
+
+  const hoje   = new Date();
+  const venc   = new Date(fim + 'T00:00:00');
+  const dias   = Math.ceil((venc - hoje) / 86400000);
+
+  aviso.style.fontWeight = '600';
+  if (dias < 0) {
+    aviso.style.color = '#c81e1e';
+    aviso.textContent = '⚠ Contrato vencido há ' + Math.abs(dias) + ' dias';
+  } else if (dias <= 30) {
+    aviso.style.color = '#c27803';
+    aviso.textContent = '⚠ Vence em ' + dias + ' dia(s) — renovação urgente';
+  } else if (dias <= 90) {
+    aviso.style.color = '#c27803';
+    aviso.textContent = 'Vence em ' + dias + ' dias';
+  } else {
+    aviso.style.color = '#057a55';
+    aviso.textContent = 'Vigente — ' + dias + ' dias restantes';
+  }
 }
 
 function limparForm() {
-  document.getElementById('codigo-preview').textContent = 'PMO-SIS-2026-????';
+  const ano = new Date().getFullYear();
+  document.getElementById('codigo-preview').textContent = `PMO-SIS-${ano}-????`;
+  document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('bloco-contrato').style.display = 'none';
+  document.getElementById('alerta-vigencia').textContent = '';
 }
 </script>
 </body>

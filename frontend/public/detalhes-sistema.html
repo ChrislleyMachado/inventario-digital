@@ -58,16 +58,13 @@
         <i class="bi bi-list"></i>
       </button>
       <div class="topbar-title">
-        <h1>SySocial</h1>
-        <p>Detalhes do sistema · PMO-SIS-2024-0001</p>
+        <h1 id="sys-nome-topbar">Carregando...</h1>
+        <p id="sys-codigo-topbar">Detalhes do sistema</p>
       </div>
       <div class="topbar-actions">
         <a href="sistemas.html" class="btn btn-secondary btn-sm">
           <i class="bi bi-arrow-left"></i> Voltar
         </a>
-        <button class="btn btn-primary btn-sm">
-          <i class="bi bi-pencil"></i> Editar
-        </button>
         <div class="topbar-user">
           <div class="topbar-avatar">A</div>
           <div class="topbar-user-info">
@@ -84,36 +81,24 @@
       <div class="card mb-24" style="margin-bottom: 24px;">
         <div class="card-body">
           <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap;">
-
-            <!-- Ícone -->
             <div style="width:64px; height:64px; background:#dbeafe; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:32px; color:#1a56db; flex-shrink:0;">
-              <i class="bi bi-people-fill"></i>
+              <i class="bi bi-grid-3x3-gap-fill"></i>
             </div>
-
-            <!-- Info principal -->
             <div style="flex:1; min-width:200px;">
               <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
-                <h2 style="font-size:22px; font-weight:800; color:#1e293b;">SySocial</h2>
-                <span class="badge badge-success">Ativo</span>
-                <span class="badge badge-warning">Alta Criticidade</span>
+                <h2 id="sys-nome-header" style="font-size:22px; font-weight:800; color:#1e293b;">—</h2>
+                <span id="sys-status-header"></span>
+                <span id="sys-criticidade-header"></span>
               </div>
-              <code style="font-size:12px; background:#f3f4f6; padding:3px 8px; border-radius:4px; color:#475569;">
-                PMO-SIS-2024-0001
-              </code>
-              <p style="font-size:13.5px; color:#64748b; margin-top:8px; max-width:600px; line-height:1.5;">
-                Sistema de gestão de benefícios e programas sociais municipais, integrando
-                dados do CRAS e atendimentos da Assistência Social.
-              </p>
+              <code id="sys-codigo-header" style="font-size:12px; background:#f3f4f6; padding:3px 8px; border-radius:4px; color:#475569;">—</code>
+              <p id="sys-descricao-header" style="font-size:13.5px; color:#64748b; margin-top:8px; max-width:600px; line-height:1.5;">—</p>
             </div>
-
-            <!-- Meta info -->
             <div style="display:flex; flex-direction:column; gap:8px; text-align:right; flex-shrink:0;">
               <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Secretaria</div>
-              <div style="font-size:13.5px; font-weight:600; color:#1e293b;">Assistência Social</div>
+              <div id="sys-secretaria-header" style="font-size:13.5px; font-weight:600; color:#1e293b;">—</div>
               <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Implantado em</div>
-              <div style="font-size:13.5px; font-weight:600; color:#1e293b;">15/03/2024</div>
+              <div id="sys-data-header" style="font-size:13.5px; font-weight:600; color:#1e293b;">—</div>
             </div>
-
           </div>
         </div>
       </div>
@@ -150,100 +135,72 @@
           </div>
           <div class="card-body">
             <div class="detail-grid">
-
               <div class="detail-item">
                 <div class="detail-label">Código Interno</div>
-                <div class="detail-value code-font">PMO-SIS-2024-0001</div>
+                <div class="detail-value code-font" id="d-codigo">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Nome do Sistema</div>
-                <div class="detail-value">SySocial</div>
+                <div class="detail-value" id="d-nome">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Tipo</div>
-                <div class="detail-value">Aplicação Web</div>
+                <div class="detail-value" id="d-tipo">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Status</div>
-                <div class="detail-value"><span class="badge badge-success">Ativo</span></div>
+                <div class="detail-value" id="d-status">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Criticidade</div>
-                <div class="detail-value"><span class="badge badge-warning">Alta</span></div>
+                <div class="detail-value" id="d-criticidade">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Secretaria</div>
-                <div class="detail-value">Assistência Social</div>
+                <div class="detail-value" id="d-secretaria">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Setor</div>
-                <div class="detail-value">CRAS Central</div>
+                <div class="detail-value" id="d-setor">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Fornecedor</div>
-                <div class="detail-value">Desenvolvimento Interno — SEMEG</div>
+                <div class="detail-value" id="d-fornecedor">—</div>
               </div>
               <div class="detail-item">
                 <div class="detail-label">Data de Implantação</div>
-                <div class="detail-value">15/03/2024</div>
+                <div class="detail-value" id="d-data-impl">—</div>
               </div>
-
             </div>
 
             <hr class="divider">
 
             <div class="detail-item" style="margin-bottom:16px;">
               <div class="detail-label">Tecnologias Utilizadas</div>
-              <div class="detail-value" style="margin-top:8px;">
-                <div class="tags-list">
-                  <span class="tag tech">HTML5</span>
-                  <span class="tag tech">CSS3</span>
-                  <span class="tag tech">JavaScript</span>
-                  <span class="tag tech">Node.js</span>
-                  <span class="tag tech">Express</span>
-                  <span class="tag db">MySQL 8.0</span>
-                </div>
-              </div>
+              <div id="d-tecnologias" class="tags-list" style="margin-top:8px;">—</div>
             </div>
 
             <div class="detail-item">
               <div class="detail-label">Banco de Dados</div>
-              <div class="detail-value" style="margin-top:6px;">
-                <span class="tag db"><i class="bi bi-database"></i> MySQL 8.0</span>
-              </div>
+              <div class="detail-value" style="margin-top:6px;" id="d-banco">—</div>
             </div>
 
             <hr class="divider">
 
             <div class="detail-item">
               <div class="detail-label">URL de Produção</div>
-              <div class="detail-value">
-                <a href="#" onclick="return false;" style="color:var(--primary);">
-                  <i class="bi bi-box-arrow-up-right"></i>
-                  https://sysocial.oriximina.pa.gov.br
-                </a>
-              </div>
+              <div class="detail-value" id="d-url-prod">—</div>
             </div>
-
             <div class="detail-item" style="margin-top:12px;">
               <div class="detail-label">URL de Homologação</div>
-              <div class="detail-value">
-                <a href="#" onclick="return false;" style="color:var(--primary);">
-                  <i class="bi bi-box-arrow-up-right"></i>
-                  https://hom.sysocial.oriximina.pa.gov.br
-                </a>
-              </div>
+              <div class="detail-value" id="d-url-homo">—</div>
             </div>
 
             <hr class="divider">
 
             <div class="detail-item">
               <div class="detail-label">Observações</div>
-              <div class="detail-value" style="font-size:13.5px; line-height:1.6; color:#475569; margin-top:6px;">
-                Sistema integrado ao banco de dados nacional do CadÚnico. Requer manutenção
-                semestral para atualização das tabelas de benefícios. Possui módulo de relatórios
-                integrado ao Power BI da Secretaria.
-              </div>
+              <div id="d-obs" style="font-size:13.5px; line-height:1.6; color:#475569; margin-top:6px;">—</div>
             </div>
           </div>
         </div>
@@ -437,41 +394,7 @@
             <div class="card-title"><i class="bi bi-people"></i> Responsáveis pelo Sistema</div>
           </div>
           <div class="card-body">
-
-            <div class="detail-grid" style="gap:24px;">
-
-              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px;">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-                  <div style="width:48px; height:48px; background:#dbeafe; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:#1a56db;">C</div>
-                  <div>
-                    <div style="font-weight:700; font-size:14px;">Carlos Mendes</div>
-                    <div style="font-size:12px; color:#64748b;">Responsável Técnico</div>
-                  </div>
-                </div>
-                <div style="font-size:12.5px; color:#64748b; line-height:1.7;">
-                  <div><i class="bi bi-envelope" style="width:16px;"></i> carlos.mendes@semeg.gov.br</div>
-                  <div><i class="bi bi-telephone" style="width:16px;"></i> (93) 98814-1234</div>
-                  <div><i class="bi bi-building" style="width:16px;"></i> SEMEG — TI</div>
-                </div>
-              </div>
-
-              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px;">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-                  <div style="width:48px; height:48px; background:#def7ec; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:#057a55;">M</div>
-                  <div>
-                    <div style="font-weight:700; font-size:14px;">Maria Santos</div>
-                    <div style="font-size:12px; color:#64748b;">Responsável Administrativo</div>
-                  </div>
-                </div>
-                <div style="font-size:12.5px; color:#64748b; line-height:1.7;">
-                  <div><i class="bi bi-envelope" style="width:16px;"></i> maria.santos@oriximina.pa.gov.br</div>
-                  <div><i class="bi bi-telephone" style="width:16px;"></i> (93) 98814-5678</div>
-                  <div><i class="bi bi-building" style="width:16px;"></i> Assistência Social — CRAS</div>
-                </div>
-              </div>
-
-            </div>
-
+            <div class="detail-grid" style="gap:24px;" id="d-responsaveis">—</div>
           </div>
         </div>
       </div>
@@ -485,43 +408,8 @@
             <div class="card-title"><i class="bi bi-clock-history"></i> Histórico de Alterações</div>
           </div>
           <div class="card-body">
-            <div class="timeline">
-
-              <div class="timeline-item">
-                <div class="timeline-dot green"></div>
-                <div class="timeline-date">27/05/2026 às 09:12</div>
-                <div class="timeline-title">Documento adicionado</div>
-                <div class="timeline-desc">Carlos Mendes adicionou o arquivo "Manual Técnico v2.1.pdf"</div>
-              </div>
-
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">20/05/2026 às 14:30</div>
-                <div class="timeline-title">Versão v2.1 registrada</div>
-                <div class="timeline-desc">Carlos Mendes registrou nova versão e atualizou o código-fonte.</div>
-              </div>
-
-              <div class="timeline-item">
-                <div class="timeline-dot orange"></div>
-                <div class="timeline-date">15/04/2026 às 11:05</div>
-                <div class="timeline-title">Responsável administrativo alterado</div>
-                <div class="timeline-desc">Administrador SEMEG alterou responsável de "João Alves" para "Maria Santos".</div>
-              </div>
-
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">10/02/2026 às 16:00</div>
-                <div class="timeline-title">Status atualizado</div>
-                <div class="timeline-desc">Sistema retornou ao status "Ativo" após atualização para v2.0.</div>
-              </div>
-
-              <div class="timeline-item">
-                <div class="timeline-dot gray"></div>
-                <div class="timeline-date">15/03/2024 às 08:00</div>
-                <div class="timeline-title">Sistema cadastrado no SIGSIS</div>
-                <div class="timeline-desc">Registro inicial criado por Carlos Mendes com status "Ativo".</div>
-              </div>
-
+            <div class="timeline" id="d-historico">
+              <div style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</div>
             </div>
           </div>
         </div>
@@ -538,25 +426,131 @@
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+<script src="js/api.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script>
-/**
- * Alterna entre abas da tela de detalhes
- */
-function switchTab(tabId) {
-  /* Remove active de todos os botões e painéis */
-  document.querySelectorAll('.tab-btn').forEach(function (btn) {
-    btn.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-panel').forEach(function (panel) {
-    panel.classList.remove('active');
-  });
+const TIPO_MAP = {
+  web: 'Aplicação Web', desktop: 'Aplicação Desktop', mobile: 'Aplicação Mobile',
+  api: 'API / Serviço', portal: 'Portal Público', erp: 'ERP / Sistema Integrado', outro: 'Outro',
+};
 
-  /* Ativa o botão e painel selecionados */
-  var btn = document.querySelector('[data-tab="' + tabId + '"]');
-  var panel = document.getElementById('panel-' + tabId);
-  if (btn) btn.classList.add('active');
+const ACAO_MAP = {
+  criacao: { label: 'Sistema cadastrado', cor: 'green' },
+  edicao:  { label: 'Dados atualizados',  cor: 'blue'  },
+  remocao: { label: 'Sistema removido',   cor: 'gray'  },
+};
+
+function cardResponsavel(nome, papel, corBg, corTexto) {
+  if (!nome) return '';
+  const inicial = nome[0].toUpperCase();
+  return `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:20px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <div style="width:48px;height:48px;background:${corBg};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:${corTexto};">${inicial}</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;">${nome}</div>
+        <div style="font-size:12px;color:#64748b;">${papel}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function setText(id, val)  { const el = document.getElementById(id); if (el) el.textContent = val || '—'; }
+function setHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML  = html; }
+
+document.addEventListener('DOMContentLoaded', async function () {
+  if (!requireAuth()) return;
+  preencherTopbarUsuario();
+
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) {
+    showToast('ID do sistema não informado na URL', 'error');
+    return;
+  }
+
+  const s = await apiFetch(`/api/sistemas/${id}`);
+  if (!s) return;
+
+  /* Topbar */
+  setText('sys-nome-topbar',   s.nome);
+  setText('sys-codigo-topbar', `Detalhes do sistema · ${s.codigo}`);
+
+  /* Header */
+  setText('sys-nome-header',       s.nome);
+  setHTML('sys-status-header',     statusBadge(s.status));
+  setHTML('sys-criticidade-header', criticidadeBadge(s.criticidade));
+  setText('sys-codigo-header',     s.codigo);
+  setText('sys-descricao-header',  s.descricao);
+  setText('sys-secretaria-header', s.secretaria);
+  setText('sys-data-header',       formatDate(s.data_implantacao));
+
+  /* Dados Gerais */
+  setText('d-codigo',    s.codigo);
+  setText('d-nome',      s.nome);
+  setText('d-tipo',      TIPO_MAP[s.tipo] || s.tipo);
+  setHTML('d-status',    statusBadge(s.status));
+  setHTML('d-criticidade', criticidadeBadge(s.criticidade));
+  setText('d-secretaria', s.secretaria);
+  setText('d-setor',      s.setor);
+  setText('d-fornecedor', s.fornecedor);
+  setText('d-data-impl',  formatDate(s.data_implantacao));
+  setText('d-banco',      s.banco_dados);
+  setText('d-obs',        s.observacoes);
+
+  const tecs = Array.isArray(s.tecnologias) ? s.tecnologias : [];
+  setHTML('d-tecnologias', tecs.length
+    ? tecs.map(t => `<span class="tag tech">${t}</span>`).join('')
+    : '<span style="color:#94a3b8;">Não informado</span>');
+
+  const urlProd = s.url_producao
+    ? `<a href="${s.url_producao}" target="_blank" style="color:var(--primary);"><i class="bi bi-box-arrow-up-right"></i> ${s.url_producao}</a>`
+    : '—';
+  const urlHomo = s.url_homologacao
+    ? `<a href="${s.url_homologacao}" target="_blank" style="color:var(--primary);"><i class="bi bi-box-arrow-up-right"></i> ${s.url_homologacao}</a>`
+    : '—';
+  setHTML('d-url-prod', urlProd);
+  setHTML('d-url-homo', urlHomo);
+
+  /* Responsáveis */
+  const respCards = [
+    cardResponsavel(s.resp_tec, 'Responsável Técnico',       '#dbeafe', '#1a56db'),
+    cardResponsavel(s.resp_adm, 'Responsável Administrativo', '#def7ec', '#057a55'),
+  ].filter(Boolean).join('') || '<p style="color:#94a3b8;">Nenhum responsável cadastrado.</p>';
+  setHTML('d-responsaveis', respCards);
+
+  /* Histórico */
+  carregarHistorico(id);
+});
+
+async function carregarHistorico(id) {
+  const rows = await apiFetch(`/api/sistemas/${id}/historico`);
+  const container = document.getElementById('d-historico');
+  if (!container) return;
+
+  if (!rows || !rows.length) {
+    container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum registro no histórico.</p>';
+    return;
+  }
+
+  const cores = { criacao: 'green', edicao: 'blue', remocao: 'gray' };
+  container.innerHTML = rows.map(h => {
+    const cor   = cores[h.acao] || '';
+    const label = ACAO_MAP[h.acao]?.label || h.acao;
+    return `<div class="timeline-item">
+      <div class="timeline-dot ${cor}"></div>
+      <div class="timeline-date">${formatDateTime(h.criado_em)}</div>
+      <div class="timeline-title">${label}</div>
+      <div class="timeline-desc">${h.descricao || ''} ${h.usuario ? `— <strong>${h.usuario}</strong>` : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const btn   = document.querySelector('[data-tab="' + tabId + '"]');
+  const panel = document.getElementById('panel-' + tabId);
+  if (btn)   btn.classList.add('active');
   if (panel) panel.classList.add('active');
 }
 </script>

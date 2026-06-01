@@ -1,58 +1,40 @@
 /* ================================================================
    SIGSIS — dashboard.js
-   Popula o dashboard com dados simulados
+   Popula o dashboard com dados reais da API (Etapa 2)
    ================================================================ */
 
-document.addEventListener('DOMContentLoaded', function () {
-  animateStats();
-  renderDistribution();
+document.addEventListener('DOMContentLoaded', async function () {
+  if (!requireAuth()) return;
+  preencherTopbarUsuario();
+
+  try {
+    const res = await apiFetch('/api/dashboard');
+    if (!res) return;
+
+    animateStats(res.stats);
+    renderDistribution(res.distribuicao, res.stats.total);
+    renderRecentes(res.recentes);
+  } catch (err) {
+    console.error('Erro ao carregar dashboard:', err);
+  }
 });
 
-/* Dados simulados */
-const STATS = {
-  total:           47,
-  producao:        28,
-  desenvolvimento:  9,
-  semDocumentacao: 12,
-  criticos:         6,
-  descontinuados:   4,
-};
-
-const RECENT_SYSTEMS = [
-  { nome: 'SySocial',                    secretaria: 'Assistência Social',    status: 'producao',      data: '2026-05-20' },
-  { nome: 'Banco de Talentos',           secretaria: 'Recursos Humanos',      status: 'desenvolvimento', data: '2026-05-18' },
-  { nome: 'Portal de Projetos Inovadores', secretaria: 'Inovação e Tecnologia', status: 'producao',    data: '2026-05-15' },
-  { nome: 'Sistema de Protocolo',        secretaria: 'Administração',         status: 'producao',      data: '2026-05-10' },
-  { nome: 'Sistema de Patrimônio',       secretaria: 'Administração',         status: 'homologacao',   data: '2026-05-05' },
-];
-
-const DISTRIBUTION = [
-  { label: 'Desenvolvimento', value: 9,  total: 47, color: 'blue'  },
-  { label: 'Homologação',     value: 6,  total: 47, color: 'cyan'  },
-  { label: 'Ativo',           value: 28, total: 47, color: 'green' },
-  { label: 'Descontinuado',   value: 4,  total: 47, color: 'gray'  },
-];
-
-/**
- * Anima os números dos cards de estatística
- */
-function animateStats() {
+function animateStats(stats) {
   const targets = {
-    'stat-total':          STATS.total,
-    'stat-producao':       STATS.producao,
-    'stat-desenvolvimento': STATS.desenvolvimento,
-    'stat-sem-doc':        STATS.semDocumentacao,
-    'stat-criticos':       STATS.criticos,
-    'stat-descontinuados': STATS.descontinuados,
+    'stat-total':           stats.total,
+    'stat-producao':        stats.producao,
+    'stat-desenvolvimento': stats.desenvolvimento,
+    'stat-homologacao':     stats.homologacao,
+    'stat-criticos':        stats.criticos,
+    'stat-descontinuados':  stats.descontinuado,
   };
 
   Object.entries(targets).forEach(function ([id, target]) {
     const el = document.getElementById(id);
     if (!el) return;
-
-    let current = 0;
-    const step  = Math.ceil(target / 30);
-    const timer = setInterval(function () {
+    let current  = 0;
+    const step   = Math.max(1, Math.ceil(target / 30));
+    const timer  = setInterval(function () {
       current = Math.min(current + step, target);
       el.textContent = current;
       if (current >= target) clearInterval(timer);
@@ -60,23 +42,18 @@ function animateStats() {
   });
 }
 
-/**
- * Renderiza as barras de distribuição por status
- */
-function renderDistribution() {
+function renderDistribution(distribuicao, total) {
   const container = document.getElementById('distribution-bars');
   if (!container) return;
 
-  const total = DISTRIBUTION[0].total;
-
-  container.innerHTML = DISTRIBUTION.map(function (item) {
-    const pct = Math.round((item.value / item.total) * 100);
+  container.innerHTML = distribuicao.map(function (item) {
+    const pct = total > 0 ? Math.round((item.total / total) * 100) : 0;
     return `<div class="status-bar-item">
       <div class="status-bar-label">${item.label}</div>
       <div class="status-bar-track">
-        <div class="status-bar-fill ${item.color}" style="width: 0%" data-width="${pct}%"></div>
+        <div class="status-bar-fill ${item.color}" style="width:0%" data-width="${pct}%"></div>
       </div>
-      <div class="status-bar-count">${item.value} <span class="status-bar-pct">${pct}%</span></div>
+      <div class="status-bar-count">${item.total} <span class="status-bar-pct">${pct}%</span></div>
     </div>`;
   }).join('');
 
@@ -86,10 +63,29 @@ function renderDistribution() {
     </div>
   `);
 
-  /* Anima as barras após render */
   setTimeout(function () {
     container.querySelectorAll('.status-bar-fill').forEach(function (bar) {
       bar.style.width = bar.getAttribute('data-width');
     });
   }, 100);
+}
+
+function renderRecentes(recentes) {
+  const tbody = document.getElementById('recent-tbody');
+  if (!tbody || !recentes) return;
+
+  if (!recentes.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:30px;color:#94a3b8;">
+      Nenhum sistema cadastrado ainda.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = recentes.map(function (s) {
+    return `<tr>
+      <td><strong>${s.nome}</strong></td>
+      <td>${s.secretaria || '—'}</td>
+      <td>${statusBadge(s.status)}</td>
+      <td>${timeAgo(s.atualizado_em)}</td>
+    </tr>`;
+  }).join('');
 }

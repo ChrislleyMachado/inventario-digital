@@ -62,7 +62,7 @@
         <p>Gerenciamento de acesso ao sistema</p>
       </div>
       <div class="topbar-actions">
-        <button class="btn btn-primary" onclick="showToast('Cadastro de usuários disponível na Etapa 2', 'info')">
+        <button class="btn btn-primary" onclick="abrirModalNovoUsuario()">
           <i class="bi bi-person-plus"></i> Novo Usuário
         </button>
         <div class="topbar-user">
@@ -83,7 +83,7 @@
           <p>Listagem de usuários e seus níveis de acesso</p>
         </div>
         <div class="page-header-actions">
-          <button class="btn btn-primary" onclick="showToast('Cadastro de usuários disponível na Etapa 2', 'info')">
+          <button class="btn btn-primary" onclick="abrirModalNovoUsuario()">
             <i class="bi bi-person-plus"></i> Novo Usuário
           </button>
         </div>
@@ -93,22 +93,22 @@
       <div class="stats-grid" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); margin-bottom:20px;">
         <div class="stat-card blue">
           <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-people"></i></div></div>
-          <div class="stat-value">12</div>
+          <div class="stat-value" id="stat-total-usuarios">—</div>
           <div class="stat-label">Total de Usuários</div>
         </div>
         <div class="stat-card green">
           <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-person-check"></i></div></div>
-          <div class="stat-value">10</div>
+          <div class="stat-value" id="stat-ativos">—</div>
           <div class="stat-label">Ativos</div>
         </div>
         <div class="stat-card orange">
           <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-shield-lock"></i></div></div>
-          <div class="stat-value">3</div>
+          <div class="stat-value" id="stat-admins">—</div>
           <div class="stat-label">Administradores</div>
         </div>
         <div class="stat-card gray">
           <div class="stat-card-top"><div class="stat-icon"><i class="bi bi-person-dash"></i></div></div>
-          <div class="stat-value">2</div>
+          <div class="stat-value" id="stat-inativos">—</div>
           <div class="stat-label">Inativos</div>
         </div>
       </div>
@@ -122,14 +122,14 @@
           </div>
           <select class="form-control" style="width:auto;" id="filtro-perfil">
             <option value="">Todos os perfis</option>
-            <option>Administrador</option>
-            <option>Técnico de TI</option>
-            <option>Consulta</option>
+            <option value="admin">Administrador</option>
+            <option value="gestor">Gestor</option>
+            <option value="visualizador">Visualizador</option>
           </select>
           <select class="form-control" style="width:auto;" id="filtro-ativo">
             <option value="">Qualquer status</option>
-            <option>Ativo</option>
-            <option>Inativo</option>
+            <option value="Ativo">Ativo</option>
+            <option value="Inativo">Inativo</option>
           </select>
         </div>
         <div class="table-wrapper">
@@ -163,78 +163,161 @@
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+<!-- Modal Novo Usuário -->
+<div id="modal-usuario" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:12px;padding:28px;width:100%;max-width:480px;margin:16px;">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;">Novo Usuário</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div><label style="font-size:12px;font-weight:600;color:#475569;">Nome completo *</label>
+        <input id="nu-nome" class="form-control" placeholder="Nome do usuário" style="margin-top:4px;"></div>
+      <div><label style="font-size:12px;font-weight:600;color:#475569;">E-mail *</label>
+        <input id="nu-email" type="email" class="form-control" placeholder="email@oriximina.pa.gov.br" style="margin-top:4px;"></div>
+      <div><label style="font-size:12px;font-weight:600;color:#475569;">Senha *</label>
+        <input id="nu-senha" type="password" class="form-control" placeholder="Senha de acesso" style="margin-top:4px;"></div>
+      <div><label style="font-size:12px;font-weight:600;color:#475569;">Cargo</label>
+        <input id="nu-cargo" class="form-control" placeholder="Ex: Analista de TI" style="margin-top:4px;"></div>
+      <div><label style="font-size:12px;font-weight:600;color:#475569;">Perfil de acesso</label>
+        <select id="nu-role" class="form-control" style="margin-top:4px;">
+          <option value="visualizador">Visualizador</option>
+          <option value="gestor">Gestor</option>
+          <option value="admin">Administrador</option>
+        </select></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:22px;">
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarUsuario()"><i class="bi bi-floppy"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/main.js"></script>
 <script>
-const USUARIOS = [
-  { nome: 'Carlos Mendes',   email: 'carlos.mendes@semeg.gov.br',      setor: 'SEMEG — TI',        perfil: 'Administrador', ativo: true,  acesso: '2026-05-27', avatar: 'C', cor: '#1a56db' },
-  { nome: 'Maria Santos',    email: 'maria.santos@oriximina.pa.gov.br', setor: 'Assistência Social', perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-26', avatar: 'M', cor: '#057a55' },
-  { nome: 'Pedro Costa',     email: 'pedro.costa@semeg.gov.br',         setor: 'SEMEG — TI',        perfil: 'Administrador', ativo: true,  acesso: '2026-05-27', avatar: 'P', cor: '#6c2bd9' },
-  { nome: 'Ana Lima',        email: 'ana.lima@oriximina.pa.gov.br',     setor: 'Recursos Humanos',  perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-25', avatar: 'A', cor: '#c27803' },
-  { nome: 'Roberto Silva',   email: 'roberto.silva@oriximina.pa.gov.br', setor: 'Administração',    perfil: 'Consulta',      ativo: true,  acesso: '2026-05-20', avatar: 'R', cor: '#0e7490' },
-  { nome: 'Lucia Oliveira',  email: 'lucia.oliveira@oriximina.pa.gov.br', setor: 'Inovação e TI',  perfil: 'Administrador', ativo: true,  acesso: '2026-05-22', avatar: 'L', cor: '#c81e1e' },
-  { nome: 'Diego Rocha',     email: 'diego.rocha@semeg.gov.br',         setor: 'Controladoria',     perfil: 'Técnico de TI', ativo: false, acesso: '2026-03-10', avatar: 'D', cor: '#6b7280' },
-  { nome: 'Sandra Barros',   email: 'sandra.barros@oriximina.pa.gov.br', setor: 'Protocolo',       perfil: 'Consulta',      ativo: true,  acesso: '2026-05-15', avatar: 'S', cor: '#057a55' },
-  { nome: 'Fernando Alves',  email: 'fernando.alves@oriximina.pa.gov.br', setor: 'Patrimônio',     perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-24', avatar: 'F', cor: '#c27803' },
-  { nome: 'Marina Souza',    email: 'marina.souza@oriximina.pa.gov.br', setor: 'Finanças',          perfil: 'Consulta',      ativo: false, acesso: '2026-04-01', avatar: 'M', cor: '#6b7280' },
-  { nome: 'Marcos Vidal',    email: 'marcos.vidal@seinfra.gov.br',      setor: 'SEINFRA',           perfil: 'Técnico de TI', ativo: true,  acesso: '2026-05-18', avatar: 'M', cor: '#0e7490' },
-  { nome: 'Patricia Sousa',  email: 'patricia.sousa@oriximina.pa.gov.br', setor: 'Governo',        perfil: 'Consulta',      ativo: true,  acesso: '2026-05-10', avatar: 'P', cor: '#6c2bd9' },
-];
-
-const BADGE_PERFIL = {
-  'Administrador': 'badge-danger',
-  'Técnico de TI': 'badge-primary',
-  'Consulta':      'badge-gray',
+const ROLE_MAP = {
+  admin:        { label: 'Administrador', cls: 'badge-danger'  },
+  gestor:       { label: 'Gestor',        cls: 'badge-primary' },
+  visualizador: { label: 'Visualizador',  cls: 'badge-gray'    },
 };
+const AVATAR_CORES = ['#1a56db','#057a55','#6c2bd9','#c27803','#0e7490','#c81e1e'];
 
-document.addEventListener('DOMContentLoaded', renderUsuarios);
-document.getElementById('busca-usuario').addEventListener('input', renderUsuarios);
-document.getElementById('filtro-perfil').addEventListener('change', renderUsuarios);
-document.getElementById('filtro-ativo').addEventListener('change', renderUsuarios);
+let todosUsuarios = [];
 
-function renderUsuarios() {
-  var busca  = normalize(document.getElementById('busca-usuario').value);
-  var perfil = document.getElementById('filtro-perfil').value;
-  var ativo  = document.getElementById('filtro-ativo').value;
+document.addEventListener('DOMContentLoaded', async function () {
+  if (!requireAuth()) return;
+  preencherTopbarUsuario();
+  await carregarUsuarios();
+  document.getElementById('busca-usuario').addEventListener('input', filtrarTabela);
+  document.getElementById('filtro-perfil').addEventListener('change', filtrarTabela);
+  document.getElementById('filtro-ativo').addEventListener('change', filtrarTabela);
+});
 
-  var lista = USUARIOS.filter(function (u) {
-    if (busca && !normalize(u.nome + ' ' + u.email).includes(busca)) return false;
-    if (perfil && u.perfil !== perfil) return false;
-    if (ativo === 'Ativo' && !u.ativo) return false;
-    if (ativo === 'Inativo' && u.ativo) return false;
+async function carregarUsuarios() {
+  const res = await apiFetch('/api/usuarios');
+  if (!res) return;
+  todosUsuarios = res.data;
+
+  document.getElementById('stat-total-usuarios').textContent = todosUsuarios.length;
+  document.getElementById('stat-ativos').textContent   = todosUsuarios.filter(u => u.ativo).length;
+  document.getElementById('stat-admins').textContent   = todosUsuarios.filter(u => u.role === 'admin').length;
+  document.getElementById('stat-inativos').textContent = todosUsuarios.filter(u => !u.ativo).length;
+
+  renderTabela(todosUsuarios);
+}
+
+function filtrarTabela() {
+  const busca  = normalize(document.getElementById('busca-usuario').value);
+  const perfil = document.getElementById('filtro-perfil').value;
+  const ativo  = document.getElementById('filtro-ativo').value;
+
+  const lista = todosUsuarios.filter(function (u) {
+    if (busca  && !normalize(u.nome + ' ' + u.email).includes(busca)) return false;
+    if (perfil && u.role !== perfil) return false;
+    if (ativo === 'Ativo'   && !u.ativo) return false;
+    if (ativo === 'Inativo' &&  u.ativo) return false;
     return true;
   });
+  renderTabela(lista);
+}
 
-  var tbody = document.getElementById('usuarios-tbody');
-  tbody.innerHTML = lista.map(function (u) {
-    var badgeCls = BADGE_PERFIL[u.perfil] || 'badge-gray';
-    var statusBadge = u.ativo
+function renderTabela(lista) {
+  const tbody = document.getElementById('usuarios-tbody');
+  if (!lista.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">Nenhum usuário encontrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = lista.map(function (u, i) {
+    const role   = ROLE_MAP[u.role] || { label: u.role, cls: 'badge-gray' };
+    const cor    = AVATAR_CORES[i % AVATAR_CORES.length];
+    const status = u.ativo
       ? '<span class="badge badge-success">Ativo</span>'
       : '<span class="badge badge-gray">Inativo</span>';
     return `<tr>
       <td>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div class="user-table-avatar" style="background:${u.cor};">${u.avatar}</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="user-table-avatar" style="background:${cor};">${u.nome[0].toUpperCase()}</div>
           <span style="font-weight:600;">${u.nome}</span>
         </div>
       </td>
       <td style="color:#64748b;">${u.email}</td>
-      <td>${u.setor}</td>
-      <td><span class="badge ${badgeCls}">${u.perfil}</span></td>
-      <td>${statusBadge}</td>
-      <td style="color:#94a3b8; font-size:12px;">${formatDate(u.acesso)}</td>
+      <td>${u.secretaria || u.cargo || '—'}</td>
+      <td><span class="badge ${role.cls}">${role.label}</span></td>
+      <td>${status}</td>
+      <td style="color:#94a3b8;font-size:12px;">${formatDate(u.criado_em)}</td>
       <td>
-        <div style="display:flex; gap:6px;">
-          <button class="btn btn-secondary btn-sm" onclick="showToast('Edição disponível na Etapa 2', 'info')">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="showToast('Ação disponível na Etapa 2', 'info')">
-            <i class="bi bi-three-dots"></i>
-          </button>
-        </div>
+        <button class="btn btn-secondary btn-sm" onclick="toggleAtivo(${u.id}, ${u.ativo})">
+          <i class="bi bi-${u.ativo ? 'person-dash' : 'person-check'}"></i>
+        </button>
       </td>
     </tr>`;
   }).join('');
+}
+
+async function toggleAtivo(id, atual) {
+  try {
+    await apiFetch(`/api/usuarios/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ativo: !atual }),
+    });
+    showToast(atual ? 'Usuário desativado' : 'Usuário ativado', 'success');
+    await carregarUsuarios();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function abrirModalNovoUsuario() {
+  document.getElementById('modal-usuario').style.display = 'flex';
+}
+
+function fecharModal() {
+  document.getElementById('modal-usuario').style.display = 'none';
+  ['nu-nome','nu-email','nu-senha','nu-cargo'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('nu-role').value = 'visualizador';
+}
+
+async function salvarUsuario() {
+  const payload = {
+    nome:  document.getElementById('nu-nome').value.trim(),
+    email: document.getElementById('nu-email').value.trim(),
+    senha: document.getElementById('nu-senha').value,
+    cargo: document.getElementById('nu-cargo').value.trim(),
+    role:  document.getElementById('nu-role').value,
+  };
+  if (!payload.nome || !payload.email || !payload.senha) {
+    showToast('Nome, e-mail e senha são obrigatórios', 'error');
+    return;
+  }
+  try {
+    await apiFetch('/api/usuarios', { method: 'POST', body: JSON.stringify(payload) });
+    showToast('Usuário criado com sucesso!', 'success');
+    fecharModal();
+    await carregarUsuarios();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
 }
 </script>
 </body>
