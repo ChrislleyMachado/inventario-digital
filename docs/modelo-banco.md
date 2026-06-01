@@ -1,11 +1,11 @@
-# SIGSIS — Modelo do Banco de Dados
+﻿# GSIS — Modelo do Banco de Dados
 
 > Modelagem completa será desenvolvida na Etapa 2
 
 ## Entidades principais
 
 - **sistemas** — registro central de cada sistema municipal
-- **usuarios** — usuários com acesso ao SIGSIS
+- **usuarios** — usuários com acesso ao GSIS
 - **documentos** — arquivos vinculados a cada sistema
 - **versoes** — histórico de versões de cada sistema
 - **responsaveis** — responsáveis técnicos/administrativos
@@ -26,3 +26,4 @@
 
 O modelo completo com DDL SQL será gerado no arquivo `schema.sql`
 após a validação das regras de negócio com as secretarias envolvidas.
+

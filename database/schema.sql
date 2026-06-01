@@ -1,5 +1,5 @@
--- ================================================================
--- SIGSIS — database/schema.sql
+﻿-- ================================================================
+-- GSIS — database/schema.sql
 -- Estrutura do banco de dados MySQL 8.0
 -- Executado automaticamente pelo Docker na primeira inicialização
 -- ================================================================
@@ -57,6 +57,14 @@ CREATE TABLE IF NOT EXISTS sistemas (
   resp_adm        VARCHAR(150),
   data_implantacao DATE,
   observacoes     TEXT,
+  origem          ENUM('interno','licitacao','convenio','cessao','outro'),
+  contrato_numero VARCHAR(100),
+  contrato_inicio DATE,
+  contrato_fim    DATE,
+  contrato_valor  DECIMAL(15,2),
+  hospedagem      ENUM('servidor_proprio','nuvem','datacenter','contratada','outro'),
+  versao_atual    VARCHAR(50),
+  acesso          ENUM('intranet','internet','ambos'),
   ativo           TINYINT(1) NOT NULL DEFAULT 1,
   criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   atualizado_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -78,3 +86,4 @@ CREATE TABLE IF NOT EXISTS historico (
   FOREIGN KEY (sistema_id) REFERENCES sistemas(id) ON DELETE CASCADE,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

@@ -1,4 +1,4 @@
-# SIGSIS — Sistema de Gestão de Sistemas Municipais
+﻿# GSIS — Gestão de Sistemas Municipais
 
 Sistema web administrativo para inventariar, organizar e controlar os sistemas utilizados pela rede municipal de Oriximiná (PA).
 
@@ -65,7 +65,7 @@ docker compose -f docker-compose.dev.yml down -v
 Abra diretamente no navegador:
 
 ```
-SIGSIS/frontend/public/login.html
+GSIS/frontend/public/login.html
 ```
 
 Ou use a extensão **Live Server** do VS Code (porta 5500 já configurada em `.vscode/settings.json`).
@@ -77,7 +77,7 @@ Ou use a extensão **Live Server** do VS Code (porta 5500 já configurada em `.v
 ## Estrutura de pastas
 
 ```
-SIGSIS/
+GSIS/
 ├── frontend/public/       ← Telas HTML/CSS/JS (foco da Etapa 1)
 │   ├── css/               ← Estilos (global, login, dashboard, sistemas, componentes)
 │   ├── js/                ← Scripts (main, auth, dashboard, sistemas, utils)

@@ -1,7 +1,7 @@
-version: '3.8'
+﻿version: '3.8'
 
 # ================================================================
-# SIGSIS — Docker Compose para Produção (Etapa 2)
+# GSIS — Docker Compose para Produção (Etapa 2)
 # Configuração completa será implementada após o backend estar pronto.
 # ================================================================
 
@@ -9,7 +9,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: sigsis-nginx
+    container_name: gsis-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -24,7 +24,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: sigsis-backend
+    container_name: gsis-backend
     expose:
       - "3001"
     env_file:
@@ -40,16 +40,16 @@ services:
 
   mysql:
     image: mysql:8.0
-    container_name: sigsis-mysql
+    container_name: gsis-mysql
     expose:
       - "3306"
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-sigsis_db}
-      MYSQL_USER: ${MYSQL_USER:-sigsis_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sigsis_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-gsis_db}
+      MYSQL_USER: ${MYSQL_USER:-gsis_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gsis_password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
     volumes:
-      - sigsis_mysql_prod:/var/lib/mysql
+      - gsis_mysql_prod:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root_password}"]
       interval: 10s
@@ -59,5 +59,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  sigsis_mysql_prod:
-    name: sigsis_mysql_prod
+  gsis_mysql_prod:
+    name: gsis_mysql_prod
+

@@ -1,4 +1,4 @@
-# SIGSIS — Regras de Negócio
+﻿# GSIS — Regras de Negócio
 
 > Documento a ser detalhado na Etapa 2
 
@@ -33,3 +33,4 @@
 
 - A criticidade define a prioridade de atendimento em incidentes
 - Sistemas "Crítica" requerem aprovação de 2 administradores para descontinuação
+

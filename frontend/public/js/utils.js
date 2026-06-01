@@ -1,5 +1,5 @@
-/* ================================================================
-   SIGSIS — utils.js
+﻿/* ================================================================
+   GSIS — utils.js
    Funções utilitárias compartilhadas
    ================================================================ */
 
@@ -35,12 +35,13 @@ function timeAgo(iso) {
 }
 
 /**
- * Gera o padrão de código interno visual (PMO-SIS-AAAA-NNNN)
+ * Gera o padrão de código interno visual (GSIS{AA}-NNNN)
  */
 function formatCodigoInterno(seq, ano) {
-  const a = ano || new Date().getFullYear();
-  const n = String(seq || 1).padStart(4, '0');
-  return `PMO-SIS-${a}-${n}`;
+  const a  = ano || new Date().getFullYear();
+  const aa = String(a).slice(2);
+  const n  = String(seq || 1).padStart(4, '0');
+  return `GSIS${aa}-${n}`;
 }
 
 /**
@@ -225,3 +226,4 @@ function showToast(msg, type = 'info') {
     setTimeout(() => toast.remove(), 300);
   }, 3500);
 }
+

@@ -4,16 +4,28 @@ const { authMiddleware } = require('../middleware/auth.middleware');
 
 router.use(authMiddleware);
 
-/* Gera o próximo código PMO-SIS-AAAA-NNNN */
+/* Gera o próximo código GSIS{AA}-NNNN */
 async function gerarCodigo(conn) {
-  const ano = new Date().getFullYear();
+  const ano  = new Date().getFullYear();
+  const aa   = String(ano).slice(2);
   const [[row]] = await conn.query(
     `SELECT codigo FROM sistemas WHERE codigo LIKE ? ORDER BY codigo DESC LIMIT 1`,
-    [`PMO-SIS-${ano}-%`]
+    [`GSIS${aa}-%`]
   );
-  const seq = row ? parseInt(row.codigo.split('-')[3], 10) + 1 : 1;
-  return `PMO-SIS-${ano}-${String(seq).padStart(4, '0')}`;
+  const seq = row ? parseInt(row.codigo.split('-')[1], 10) + 1 : 1;
+  return `GSIS${aa}-${String(seq).padStart(4, '0')}`;
 }
+
+/* GET /api/sistemas/proximo-codigo */
+router.get('/proximo-codigo', async (req, res) => {
+  const conn = await pool.getConnection();
+  try {
+    const codigo = await gerarCodigo(conn);
+    res.json({ codigo });
+  } finally {
+    conn.release();
+  }
+});
 
 /* Busca secretaria_id pelo nome completo (aceita nome parcial) */
 async function resolveSecretaria(conn, nome) {
@@ -87,6 +99,8 @@ router.post('/', async (req, res) => {
       secretaria, setor, resp_tec, resp_adm, fornecedor,
       tecnologias, banco_dados, url_producao, url_homologacao,
       data_implantacao, observacoes,
+      origem, contrato_numero, contrato_inicio, contrato_fim, contrato_valor,
+      hospedagem, versao_atual, acesso,
     } = req.body;
 
     if (!nome || !status || !criticidade || !tipo) {
@@ -106,14 +120,21 @@ router.post('/', async (req, res) => {
          (codigo, nome, descricao, finalidade, tipo, status, criticidade,
           secretaria_id, setor, resp_tec, resp_adm, fornecedor,
           tecnologias, banco_dados, url_producao, url_homologacao,
-          data_implantacao, observacoes, criado_por)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          data_implantacao, observacoes,
+          origem, contrato_numero, contrato_inicio, contrato_fim, contrato_valor,
+          hospedagem, versao_atual, acesso, criado_por)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         codigo, nome, descricao || null, finalidade || null,
         tipo, status, criticidade, secretaria_id, setor || null,
         resp_tec || null, resp_adm || null, fornecedor || null,
         tecJson, banco_dados || null, url_producao || null, url_homologacao || null,
-        data_implantacao || null, observacoes || null, req.usuario.id,
+        data_implantacao || null, observacoes || null,
+        origem || null, contrato_numero || null,
+        contrato_inicio || null, contrato_fim || null,
+        contrato_valor ? parseFloat(contrato_valor) : null,
+        hospedagem || null, versao_atual || null, acesso || null,
+        req.usuario.id,
       ]
     );
 
@@ -154,6 +175,8 @@ router.put('/:id', async (req, res) => {
       secretaria, setor, resp_tec, resp_adm, fornecedor,
       tecnologias, banco_dados, url_producao, url_homologacao,
       data_implantacao, observacoes,
+      origem, contrato_numero, contrato_inicio, contrato_fim, contrato_valor,
+      hospedagem, versao_atual, acesso,
     } = req.body;
 
     const secretaria_id = await resolveSecretaria(conn, secretaria);
@@ -168,13 +191,20 @@ router.put('/:id', async (req, res) => {
          nome=?, descricao=?, finalidade=?, tipo=?, status=?, criticidade=?,
          secretaria_id=?, setor=?, resp_tec=?, resp_adm=?, fornecedor=?,
          tecnologias=?, banco_dados=?, url_producao=?, url_homologacao=?,
-         data_implantacao=?, observacoes=?
+         data_implantacao=?, observacoes=?,
+         origem=?, contrato_numero=?, contrato_inicio=?, contrato_fim=?, contrato_valor=?,
+         hospedagem=?, versao_atual=?, acesso=?
        WHERE id = ?`,
       [
         nome, descricao || null, finalidade || null, tipo, status, criticidade,
         secretaria_id, setor || null, resp_tec || null, resp_adm || null, fornecedor || null,
         tecJson, banco_dados || null, url_producao || null, url_homologacao || null,
-        data_implantacao || null, observacoes || null, req.params.id,
+        data_implantacao || null, observacoes || null,
+        origem || null, contrato_numero || null,
+        contrato_inicio || null, contrato_fim || null,
+        contrato_valor ? parseFloat(contrato_valor) : null,
+        hospedagem || null, versao_atual || null, acesso || null,
+        req.params.id,
       ]
     );
 

@@ -1,5 +1,5 @@
-/* ================================================================
-   SIGSIS — main.js
+﻿/* ================================================================
+   GSIS — main.js
    Funções de layout: sidebar, topbar, navegação
    Incluso em todas as páginas internas
    ================================================================ */
@@ -52,3 +52,4 @@ function setActiveNavItem() {
     }
   });
 }
+

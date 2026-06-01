@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIGSIS — Novo Sistema</title>
+  <title>GSIS — Novo Sistema</title>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/componentes.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -17,7 +17,7 @@
     <div class="sidebar-brand">
       <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
       <div class="sidebar-brand-text">
-        <h2>SIGSIS</h2>
+        <h2>GSIS</h2>
         <p>Gestão de Sistemas</p>
       </div>
     </div>
@@ -40,12 +40,12 @@
         <i class="bi bi-gear"></i><span>Configurações</span>
       </a>
       <p class="nav-section-title">Sessão</p>
-      <a href="login.html" class="nav-item danger">
+      <a href="#" onclick="encerrarSessao()" class="nav-item danger">
         <i class="bi bi-box-arrow-right"></i><span>Sair</span>
       </a>
     </nav>
     <div class="sidebar-footer">
-      <p>SIGSIS v1.0</p>
+      <p>GSIS v1.0</p>
       <p class="version">Prefeitura de Oriximiná — SEMEG</p>
     </div>
   </aside>
@@ -87,9 +87,9 @@
       <!-- Preview do código interno -->
       <div class="code-preview-box">
         <div class="code-preview-label">Código Interno do Sistema</div>
-        <div class="code-preview-value" id="codigo-preview">PMO-SIS-2026-????</div>
+        <div class="code-preview-value" id="codigo-preview">GSIS26-????</div>
         <div class="code-preview-note">
-          O código definitivo será gerado automaticamente pelo sistema ao salvar (Etapa 2)
+          O código definitivo será gerado automaticamente pelo sistema ao salvar
         </div>
       </div>
 
@@ -137,9 +137,9 @@
                 <label for="status">Status <span class="req">*</span></label>
                 <select id="status" class="form-control" required>
                   <option value="">Selecione...</option>
+                  <option value="producao">Ativo</option>
                   <option value="desenvolvimento">Desenvolvimento</option>
                   <option value="homologacao">Homologação</option>
-                  <option value="producao">Ativo</option>
                   <option value="descontinuado">Descontinuado</option>
                 </select>
               </div>
@@ -282,26 +282,63 @@
             <div class="form-grid">
 
               <div class="form-group full">
-                <label for="tecnologias">Tecnologias Utilizadas</label>
-                <input type="text" id="tecnologias" class="form-control" placeholder="Ex: HTML, CSS, JavaScript, Node.js, MySQL">
-                <p class="form-hint">Separe as tecnologias por vírgula</p>
+                <label>Tecnologias Utilizadas</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px;">
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#1a56db; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-window"></i> Frontend
+                    </label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="tec_frontend" class="form-control" placeholder="Ex: React, Vue.js, HTML, CSS..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#057a55; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-server"></i> Backend
+                    </label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="tec_backend" class="form-control" placeholder="Ex: Node.js, PHP, Java, Python..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#c27803; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-database"></i> Banco de Dados
+                    </label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="tec_banco" class="form-control" placeholder="Ex: MySQL, PostgreSQL, Oracle..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#6c2bd9; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-plug"></i> APIs / Integrações
+                    </label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="tec_api" class="form-control" placeholder="Ex: REST, SOAP, Gov.br, CadÚnico..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                  </div>
+
+                  <div style="grid-column:1/-1;">
+                    <label style="font-size:11px; font-weight:700; color:#0e7490; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-cloud-upload"></i> Infraestrutura / Deploy
+                    </label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="tec_infra" class="form-control" placeholder="Ex: Docker, Nginx, AWS, Linux..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                  </div>
+
+                </div>
+                <p class="form-hint" style="margin-top:8px;">Separe as tecnologias de cada grupo por vírgula</p>
               </div>
 
-              <div class="form-group">
-                <label for="banco_dados">Banco de Dados Utilizado</label>
-                <select id="banco_dados" class="form-control">
-                  <option value="">Selecione...</option>
-                  <option>MySQL</option>
-                  <option>PostgreSQL</option>
-                  <option>SQLite</option>
-                  <option>SQL Server</option>
-                  <option>Oracle</option>
-                  <option>MongoDB</option>
-                  <option>Firebase</option>
-                  <option>Nenhum</option>
-                  <option>Outro</option>
-                </select>
-              </div>
 
               <div class="form-group">
                 <label for="hospedagem">Ambiente de Hospedagem</label>
@@ -372,7 +409,7 @@
     </main>
 
     <footer class="app-footer">
-      SIGSIS — Sistema de Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      GSIS — Gestão de Sistemas Municipais &nbsp;·&nbsp;
       Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
     </footer>
   </div>
@@ -391,10 +428,15 @@ createAutocomplete(document.getElementById('secretaria'), SECRETARIAS);
 
 document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
 
+/* Busca o próximo código disponível na API */
+apiFetch('/api/sistemas/proximo-codigo').then(function (res) {
+  if (res && res.codigo) {
+    document.getElementById('codigo-preview').textContent = res.codigo;
+  }
+});
+
 document.getElementById('nome').addEventListener('input', function () {
-  const preview = document.getElementById('codigo-preview');
-  const ano = new Date().getFullYear();
-  preview.textContent = this.value.trim() ? `PMO-SIS-${ano}-????` : `PMO-SIS-${ano}-????`;
+  /* mantém o preview com o código calculado — não altera */
 });
 
 async function salvarSistema(e) {
@@ -403,26 +445,44 @@ async function salvarSistema(e) {
   btn.disabled = true;
   btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
 
-  const tecStr = document.getElementById('tecnologias').value;
+  function parseTec(id) {
+    const v = document.getElementById(id)?.value || '';
+    return v.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  const tecStr = null;
 
   const payload = {
-    nome:             document.getElementById('nome').value.trim(),
-    descricao:        document.getElementById('descricao').value.trim(),
-    finalidade:       document.getElementById('finalidade').value.trim(),
-    tipo:             document.getElementById('tipo').value,
-    status:           document.getElementById('status').value,
-    criticidade:      document.getElementById('criticidade').value,
-    secretaria:       document.getElementById('secretaria').value.trim(),
-    setor:            document.getElementById('setor').value.trim(),
-    resp_tec:         document.getElementById('resp_tec').value.trim(),
-    resp_adm:         document.getElementById('resp_adm').value.trim(),
-    fornecedor:       document.getElementById('fornecedor').value.trim(),
-    tecnologias:      tecStr ? tecStr.split(',').map(t => t.trim()).filter(Boolean) : [],
-    banco_dados:      document.getElementById('banco_dados').value,
-    url_producao:     document.getElementById('url_prod').value.trim(),
-    url_homologacao:  document.getElementById('url_homo').value.trim(),
-    data_implantacao: document.getElementById('data_impl').value || null,
-    observacoes:      document.getElementById('observacoes').value.trim(),
+    nome:              document.getElementById('nome').value.trim(),
+    descricao:         document.getElementById('descricao').value.trim(),
+    finalidade:        document.getElementById('finalidade').value.trim(),
+    tipo:              document.getElementById('tipo').value,
+    status:            document.getElementById('status').value,
+    criticidade:       document.getElementById('criticidade').value,
+    secretaria:        document.getElementById('secretaria').value.trim(),
+    setor:             document.getElementById('setor').value.trim(),
+    resp_tec:          document.getElementById('resp_tec').value.trim(),
+    resp_adm:          document.getElementById('resp_adm').value.trim(),
+    fornecedor:        document.getElementById('fornecedor').value.trim(),
+    tecnologias:       [
+      ...parseTec('tec_frontend'),
+      ...parseTec('tec_backend'),
+      ...parseTec('tec_banco'),
+      ...parseTec('tec_api'),
+      ...parseTec('tec_infra'),
+    ],
+    banco_dados:       document.getElementById('banco_dados').value,
+    url_producao:      document.getElementById('url_prod').value.trim(),
+    url_homologacao:   document.getElementById('url_homo').value.trim(),
+    data_implantacao:  document.getElementById('data_impl').value || null,
+    observacoes:       document.getElementById('observacoes').value.trim(),
+    origem:            document.getElementById('origem').value || null,
+    versao_atual:      document.getElementById('versao_atual').value.trim() || null,
+    contrato_numero:   document.getElementById('contrato_numero').value.trim() || null,
+    contrato_inicio:   document.getElementById('contrato_inicio').value || null,
+    contrato_fim:      document.getElementById('contrato_fim').value || null,
+    contrato_valor:    document.getElementById('contrato_valor').value || null,
+    hospedagem:        document.getElementById('hospedagem').value || null,
+    acesso:            document.getElementById('acesso').value || null,
   };
 
   try {
@@ -480,12 +540,15 @@ function alertaVigencia() {
 }
 
 function limparForm() {
-  const ano = new Date().getFullYear();
-  document.getElementById('codigo-preview').textContent = `PMO-SIS-${ano}-????`;
   document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
   document.getElementById('bloco-contrato').style.display = 'none';
   document.getElementById('alerta-vigencia').textContent = '';
+  apiFetch('/api/sistemas/proximo-codigo').then(function (res) {
+    if (res && res.codigo) document.getElementById('codigo-preview').textContent = res.codigo;
+  });
 }
 </script>
 </body>
 </html>
+
+

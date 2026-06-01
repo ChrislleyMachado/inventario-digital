@@ -1,14 +1,14 @@
-# SIGSIS — Escopo do Sistema
+﻿# GSIS — Escopo do Sistema
 
 ## Definição
 
-**SIGSIS** é um sistema web administrativo para inventariar e gerenciar os sistemas municipais, reunindo dados técnicos, documentação, repositórios, versões, responsáveis e código interno de registro.
+**GSIS** é um sistema web administrativo para inventariar e gerenciar os sistemas municipais, reunindo dados técnicos, documentação, repositórios, versões, responsáveis e código interno de registro.
 
 ## Objetivo
 
 Centralizar o controle de todos os sistemas de informação utilizados pela rede municipal de Oriximiná, facilitando a gestão, auditoria, manutenção e continuidade tecnológica da prefeitura.
 
-## Problemas que o SIGSIS resolve
+## Problemas que o GSIS resolve
 
 - Falta de inventário centralizado dos sistemas municipais
 - Dificuldade de localizar documentação técnica e manuais
@@ -58,3 +58,4 @@ Centralizar o controle de todos os sistemas de informação utilizados pela rede
 | Auth      | JWT (jsonwebtoken)            |
 | Upload    | Multer                        |
 | Servidor  | Linux + Nginx (produção)      |
+

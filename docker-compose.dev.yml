@@ -1,7 +1,7 @@
-version: '3.8'
+﻿version: '3.8'
 
 # ================================================================
-# SIGSIS — Docker Compose para Desenvolvimento
+# GSIS — Docker Compose para Desenvolvimento
 # ================================================================
 # Uso:
 #   docker compose -f docker-compose.dev.yml up --build
@@ -18,7 +18,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: sigsis-frontend-dev
+    container_name: gsis-frontend-dev
     volumes:
       # Bind mount: alterações salvas no VS Code refletem imediatamente
       - ./frontend/public:/app
@@ -31,7 +31,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    container_name: sigsis-backend-dev
+    container_name: gsis-backend-dev
     volumes:
       # Bind mount do código — nodemon detecta alterações
       - ./backend:/app
@@ -53,16 +53,16 @@ services:
   # ---- MySQL 8 ------------------------------------------------
   mysql:
     image: mysql:8.0
-    container_name: sigsis-mysql-dev
+    container_name: gsis-mysql-dev
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-sigsis_db}
-      MYSQL_USER: ${MYSQL_USER:-sigsis_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sigsis_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-gsis_db}
+      MYSQL_USER: ${MYSQL_USER:-gsis_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gsis_password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
     volumes:
-      - sigsis_mysql_dev:/var/lib/mysql
+      - gsis_mysql_dev:/var/lib/mysql
       # Scripts SQL em database/ rodam automaticamente na 1ª inicialização
       - ./database:/docker-entrypoint-initdb.d
     healthcheck:
@@ -74,5 +74,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  sigsis_mysql_dev:
-    name: sigsis_mysql_dev
+  gsis_mysql_dev:
+    name: gsis_mysql_dev
+

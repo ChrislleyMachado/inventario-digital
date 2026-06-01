@@ -1,11 +1,11 @@
-/* ================================================================
-   SIGSIS — auth.js
+﻿/* ================================================================
+   GSIS — auth.js
    Autenticação real via API (Etapa 2)
    ================================================================ */
 
 document.addEventListener('DOMContentLoaded', function () {
   /* Redireciona direto se já estiver logado */
-  if (localStorage.getItem('sigsis_token')) {
+  if (localStorage.getItem('GSIS_token')) {
     window.location.href = 'dashboard.html';
     return;
   }
@@ -76,3 +76,4 @@ function clearLoginError() {
   const err = document.getElementById('login-error');
   if (err) err.remove();
 }
+

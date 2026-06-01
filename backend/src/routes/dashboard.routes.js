@@ -26,10 +26,10 @@ router.get('/', authMiddleware, async (req, res) => {
   `);
 
   const distribuicao = [
-    { status: 'desenvolvimento', label: 'Desenvolvimento', total: Number(stats.desenvolvimento), color: 'blue'  },
-    { status: 'homologacao',     label: 'Homologação',     total: Number(stats.homologacao),     color: 'cyan'  },
-    { status: 'producao',        label: 'Ativo',           total: Number(stats.producao),        color: 'green' },
-    { status: 'descontinuado',   label: 'Descontinuado',   total: Number(stats.descontinuado),   color: 'gray'  },
+    { status: 'producao',        label: 'Ativo',           total: Number(stats.producao),        color: 'green'  },
+    { status: 'desenvolvimento', label: 'Desenvolvimento', total: Number(stats.desenvolvimento), color: 'cyan'   },
+    { status: 'homologacao',     label: 'Homologação',     total: Number(stats.homologacao),     color: 'orange' },
+    { status: 'descontinuado',   label: 'Descontinuado',   total: Number(stats.descontinuado),   color: 'gray'   },
   ];
 
   res.json({

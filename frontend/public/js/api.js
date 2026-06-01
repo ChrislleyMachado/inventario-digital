@@ -1,5 +1,5 @@
-/* ================================================================
-   SIGSIS — api.js
+﻿/* ================================================================
+   GSIS — api.js
    Helper centralizado para chamadas à API e guarda de autenticação
    ================================================================ */
 
@@ -11,22 +11,22 @@ const API_BASE = (window.location.port === '5500' || window.location.port === '5
 
 /* ---- Tokens / sessão ---- */
 function getToken() {
-  return localStorage.getItem('sigsis_token');
+  return localStorage.getItem('GSIS_token');
 }
 
 function getUsuario() {
-  try { return JSON.parse(localStorage.getItem('sigsis_usuario') || 'null'); }
+  try { return JSON.parse(localStorage.getItem('GSIS_usuario') || 'null'); }
   catch { return null; }
 }
 
 function salvarSessao(token, usuario) {
-  localStorage.setItem('sigsis_token', token);
-  localStorage.setItem('sigsis_usuario', JSON.stringify(usuario));
+  localStorage.setItem('GSIS_token', token);
+  localStorage.setItem('GSIS_usuario', JSON.stringify(usuario));
 }
 
 function encerrarSessao() {
-  localStorage.removeItem('sigsis_token');
-  localStorage.removeItem('sigsis_usuario');
+  localStorage.removeItem('GSIS_token');
+  localStorage.removeItem('GSIS_usuario');
   window.location.href = 'login.html';
 }
 
@@ -72,3 +72,4 @@ async function apiFetch(path, options = {}) {
 
   return data;
 }
+

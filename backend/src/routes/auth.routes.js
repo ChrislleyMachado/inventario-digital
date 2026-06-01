@@ -1,4 +1,4 @@
-const router  = require('express').Router();
+﻿const router  = require('express').Router();
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const { pool } = require('../config/db');
@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
   }
 
   const payload = { id: usuario.id, nome: usuario.nome, email: usuario.email, role: usuario.role };
-  const token = jwt.sign(payload, process.env.JWT_SECRET || 'sigsis_secret', {
+  const token = jwt.sign(payload, process.env.JWT_SECRET || 'GSIS_secret', {
     expiresIn: process.env.JWT_EXPIRES_IN || '8h',
   });
 
@@ -63,3 +63,4 @@ router.get('/me', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+

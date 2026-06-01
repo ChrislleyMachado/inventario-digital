@@ -1,5 +1,5 @@
--- ================================================================
--- SIGSIS — database/seeds.sql
+﻿-- ================================================================
+-- GSIS — database/seeds.sql
 -- Dados iniciais de desenvolvimento
 -- Executado automaticamente pelo Docker na primeira inicialização
 -- (após schema.sql, por ordem alfabética de arquivo)
@@ -118,3 +118,4 @@ INSERT INTO sistemas (codigo, nome, descricao, finalidade, tipo, status, critici
     '["HTML","CSS","JavaScript","Firebase"]', 'Firebase',
     '2021-05-15'
   );
+

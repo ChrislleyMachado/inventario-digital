@@ -1,12 +1,12 @@
-const mysql   = require('mysql2/promise');
+﻿const mysql   = require('mysql2/promise');
 const bcrypt  = require('bcryptjs');
 
 const pool = mysql.createPool({
   host:               process.env.MYSQL_HOST     || 'localhost',
   port:               process.env.MYSQL_PORT     || 3306,
-  database:           process.env.MYSQL_DATABASE || 'sigsis_db',
-  user:               process.env.MYSQL_USER     || 'sigsis_user',
-  password:           process.env.MYSQL_PASSWORD || 'sigsis_password',
+  database:           process.env.MYSQL_DATABASE || 'gsis_db',
+  user:               process.env.MYSQL_USER     || 'gsis_user',
+  password:           process.env.MYSQL_PASSWORD || 'gsis_password',
   waitForConnections: true,
   connectionLimit:    10,
   queueLimit:         0,
@@ -44,3 +44,4 @@ async function initDB(tentativas = 5, intervalo = 3000) {
 }
 
 module.exports = { pool, initDB };
+

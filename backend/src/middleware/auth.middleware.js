@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+﻿const jwt = require('jsonwebtoken');
 
 function authMiddleware(req, res, next) {
   const header = req.headers['authorization'];
@@ -8,7 +8,7 @@ function authMiddleware(req, res, next) {
 
   const token = header.slice(7);
   try {
-    req.usuario = jwt.verify(token, process.env.JWT_SECRET || 'sigsis_secret');
+    req.usuario = jwt.verify(token, process.env.JWT_SECRET || 'GSIS_secret');
     next();
   } catch {
     return res.status(401).json({ erro: 'Token inválido ou expirado' });
@@ -23,3 +23,4 @@ function adminOnly(req, res, next) {
 }
 
 module.exports = { authMiddleware, adminOnly };
+

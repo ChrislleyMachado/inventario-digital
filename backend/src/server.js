@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 
 const express = require('express');
 const cors    = require('cors');
@@ -46,7 +46,7 @@ app.use((err, req, res, _next) => {
 initDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`SIGSIS rodando em http://localhost:${PORT}`);
+      console.log(`GSIS rodando em http://localhost:${PORT}`);
       console.log(`Etapa 2 — Backend completo com MySQL`);
     });
   })
@@ -56,3 +56,4 @@ initDB()
   });
 
 module.exports = app;
+
