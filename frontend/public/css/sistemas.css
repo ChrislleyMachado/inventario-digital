@@ -61,13 +61,31 @@
 
 /* ---- Código interno ---- */
 .sistema-codigo {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #c7d2fe;
   font-family: 'Courier New', monospace;
+  white-space: nowrap;
   font-size: 11px;
-  color: var(--muted);
-  background: var(--gray-light);
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.3px;
+  vertical-align: middle;
+}
+
+.codigo-prefix {
+  background: var(--primary, #1a56db);
+  color: #fff;
+  padding: 3px 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.codigo-seq {
+  background: #eef2ff;
+  color: var(--primary, #1a56db);
+  padding: 3px 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 /* ---- Criticidade ---- */
@@ -78,9 +96,30 @@
 
 /* ---- Ações da linha ---- */
 .td-actions {
-  display: flex;
-  gap: 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+thead th:last-child { text-align: center; }
+
+.td-action-btn {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 15px;
+  transition: background var(--transition), color var(--transition);
+  text-decoration: none;
+}
+
+.td-action-btn:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 /* ---- Cards de sistemas (alternativa à tabela) ---- */

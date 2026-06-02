@@ -57,12 +57,12 @@ function renderTable(data) {
 
   if (!data.length) {
     if (temFiltroAtivo()) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8;">
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">
         <i class="bi bi-search" style="font-size:32px;display:block;margin-bottom:10px;"></i>
         Nenhum sistema encontrado com os filtros aplicados.
       </td></tr>`;
     } else {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px 40px;color:#94a3b8;">
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:48px 40px;color:#94a3b8;">
         <i class="bi bi-grid-3x3-gap" style="font-size:40px;display:block;margin-bottom:14px;color:#cbd5e1;"></i>
         <div style="font-size:15px;font-weight:600;color:#64748b;margin-bottom:6px;">Nenhum sistema cadastrado ainda</div>
         <div style="font-size:13px;margin-bottom:20px;">Registre o primeiro sistema no inventário municipal</div>
@@ -77,7 +77,7 @@ function renderTable(data) {
   tbody.innerHTML = data.map(function (s) {
     const desc = (s.descricao || '').substring(0, 52) + ((s.descricao || '').length > 52 ? '...' : '');
     return `<tr>
-      <td><span class="sistema-codigo">${s.codigo}</span></td>
+      <td>${formatCodigo(s.codigo)}</td>
       <td class="td-nome">
         <strong>${s.nome}</strong>
         <span>${desc}</span>
@@ -85,10 +85,9 @@ function renderTable(data) {
       <td>${s.secretaria || '—'}</td>
       <td>${statusBadge(s.status)}</td>
       <td>${criticidadeBadge(s.criticidade)}</td>
-      <td>${s.resp_tec || '—'}</td>
       <td class="td-actions">
-        <a href="detalhes-sistema.html?id=${s.id}" class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-eye"></i> Ver Detalhes
+        <a href="detalhes-sistema.html?id=${s.id}" class="td-action-btn" title="Ver detalhes">
+          <i class="bi bi-info-circle"></i>
         </a>
       </td>
     </tr>`;
@@ -126,6 +125,14 @@ function limparFiltros() {
     if (el) el.value = '';
   });
   carregarSistemas();
+}
+
+function formatCodigo(codigo) {
+  const idx = (codigo || '').lastIndexOf('-');
+  if (idx === -1) return `<span class="sistema-codigo"><span class="codigo-prefix">${codigo}</span></span>`;
+  const prefix = codigo.slice(0, idx);
+  const seq    = codigo.slice(idx + 1);
+  return `<span class="sistema-codigo"><span class="codigo-prefix">${prefix}</span><span class="codigo-seq">${seq}</span></span>`;
 }
 
 function updateCount(n) {

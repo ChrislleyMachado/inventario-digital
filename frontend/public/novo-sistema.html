@@ -7,6 +7,33 @@
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/componentes.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    /* opções disponíveis (outline) */
+    .tec-options { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; min-height:0; }
+    .tec-opt {
+      display:inline-flex; align-items:center;
+      padding:3px 12px; border-radius:999px;
+      font-size:12px; font-weight:600; line-height:1.5;
+      cursor:pointer; white-space:nowrap;
+      border:1.5px solid; background:transparent;
+      transition:background .12s;
+    }
+    .tec-opt-empty { font-size:12px; color:#9ca3af; font-style:italic; padding:2px 0; }
+    /* tags selecionadas (filled) */
+    .tec-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; min-height:0; }
+    .tec-tags:not(:empty) { padding-top:2px; border-top:1px dashed #e5e7eb; }
+    .tec-tag  {
+      display:inline-flex; align-items:center; gap:3px;
+      padding:3px 10px 3px 12px; border-radius:999px;
+      font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap;
+    }
+    .tec-tag-x {
+      cursor:pointer; opacity:.5; font-size:15px; line-height:1; margin-left:2px;
+      font-style:normal;
+    }
+    .tec-tag-x:hover { opacity:1; }
+    .tec-search { margin-bottom:0; }
+  </style>
 </head>
 <body>
 
@@ -87,7 +114,9 @@
       <!-- Preview do código interno -->
       <div class="code-preview-box">
         <div class="code-preview-label">Código Interno do Sistema</div>
-        <div class="code-preview-value" id="codigo-preview">GSIS26-????</div>
+        <div class="code-preview-value" id="codigo-preview">
+          <span class="codigo-prefix">GSIS26</span><span class="codigo-seq">????</span>
+        </div>
         <div class="code-preview-note">
           O código definitivo será gerado automaticamente pelo sistema ao salvar
         </div>
@@ -194,20 +223,14 @@
                 <input type="text" id="setor" class="form-control" placeholder="Ex: DGRH, Protocolo Geral">
               </div>
 
-              <div class="form-group">
-                <label for="resp_tec">Responsável Técnico <span class="req">*</span></label>
-                <input type="text" id="resp_tec" class="form-control" placeholder="Nome do responsável técnico" required>
+              <div class="form-group full">
+                <label>Responsáveis Técnicos <span class="req">*</span></label>
+                <div id="resp-tec-lista"></div>
+                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="addRespTec()">
+                  <i class="bi bi-plus-circle"></i> Adicionar responsável
+                </button>
               </div>
 
-              <div class="form-group">
-                <label for="resp_adm">Responsável Administrativo</label>
-                <input type="text" id="resp_adm" class="form-control" placeholder="Nome do responsável administrativo">
-              </div>
-
-              <div class="form-group">
-                <label for="fornecedor">Fornecedor / Desenvolvedor</label>
-                <input type="text" id="fornecedor" class="form-control" placeholder="Ex: Desenvolvimento interno, SEMEG">
-              </div>
 
             </div>
           </div>
@@ -224,9 +247,10 @@
 
               <div class="form-group">
                 <label for="origem">Origem do Sistema <span class="req">*</span></label>
-                <select id="origem" class="form-control" required onchange="toggleCamposContrato()">
+                <select id="origem" class="form-control" required onchange="toggleOrigem()">
                   <option value="">Selecione...</option>
                   <option value="interno">Desenvolvimento Interno — SEMEG</option>
+                  <option value="transferencia">Desenvolvido por outra Secretaria</option>
                   <option value="licitacao">Licitação / Contrato</option>
                   <option value="convenio">Convênio / Parceria</option>
                   <option value="cessao">Cessão / Doação</option>
@@ -240,33 +264,150 @@
                 <input type="text" id="versao_atual" class="form-control" placeholder="Ex: 2.1.0, 2024.3">
               </div>
 
-              <!-- Campos visíveis apenas quando a origem NÃO é desenvolvimento interno -->
-              <div id="bloco-contrato" style="display:none; grid-column:1/-1;">
-              <div class="form-grid">
-
-                <div class="form-group">
-                  <label for="contrato_numero">Número do Contrato / Processo</label>
-                  <input type="text" id="contrato_numero" class="form-control" placeholder="Ex: Contrato 012/2023 — Proc. 0234/2023">
+              <!-- INTERNO -->
+              <div id="bloco-interno" style="display:none; grid-column:1/-1;">
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;color:#166534;font-size:13px;display:flex;gap:10px;align-items:flex-start;">
+                  <i class="bi bi-check-circle-fill" style="font-size:16px;margin-top:1px;flex-shrink:0;"></i>
+                  <div>
+                    <strong>Desenvolvimento Interno — SEMEG</strong>
+                    <p style="margin:4px 0 0;opacity:.8;">Sistema desenvolvido diretamente pela equipe da SEMEG. Não há fornecedor externo nem contrato associado.</p>
+                  </div>
                 </div>
+              </div>
 
-                <div class="form-group">
-                  <label for="contrato_valor">Valor do Contrato (R$)</label>
-                  <input type="number" id="contrato_valor" class="form-control" placeholder="Ex: 48000.00" min="0" step="0.01">
-                  <p class="form-hint">Valor total do contrato ou licença</p>
+              <!-- TRANSFERÊNCIA -->
+              <div id="bloco-transferencia" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="transf_secretaria">Secretaria de Origem</label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="transf_secretaria" class="form-control" placeholder="Secretaria que desenvolveu o sistema..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                    <p class="form-hint">Secretaria responsável pelo desenvolvimento original</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="transf_data">Data de Transferência</label>
+                    <input type="date" id="transf_data" class="form-control">
+                    <p class="form-hint">Data em que a SEMEG assumiu a responsabilidade</p>
+                  </div>
                 </div>
+              </div>
 
-                <div class="form-group">
-                  <label for="contrato_inicio">Vigência — Início</label>
-                  <input type="date" id="contrato_inicio" class="form-control">
+              <!-- LICITAÇÃO / CONTRATO -->
+              <div id="bloco-licitacao" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Fornecedor / Contratada</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="forn_nome" class="form-control" placeholder="Ex: Empresa Soluções Ltda">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="forn_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Telefone</label>
+                        <input type="text" id="forn_telefone" class="form-control" placeholder="(00) 00000-0000" maxlength="15" oninput="this.value=maskTelefone(this.value)">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">E-mail</label>
+                        <input type="email" id="forn_email" class="form-control" placeholder="contato@empresa.com.br">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_numero">Número do Contrato / Processo</label>
+                    <input type="text" id="contrato_numero" class="form-control" placeholder="Ex: Contrato 012/2023 — Proc. 0234/2023">
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_valor">Valor do Contrato (R$)</label>
+                    <input type="number" id="contrato_valor" class="form-control" placeholder="Ex: 48000.00" min="0" step="0.01">
+                    <p class="form-hint">Valor total do contrato ou licença</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_inicio">Vigência — Início</label>
+                    <input type="date" id="contrato_inicio" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_fim">Vigência — Fim</label>
+                    <input type="date" id="contrato_fim" class="form-control" oninput="alertaVigencia()">
+                    <p class="form-hint" id="alerta-vigencia"></p>
+                  </div>
                 </div>
+              </div>
 
-                <div class="form-group">
-                  <label for="contrato_fim">Vigência — Fim</label>
-                  <input type="date" id="contrato_fim" class="form-control" oninput="alertaVigencia()">
-                  <p class="form-hint" id="alerta-vigencia"></p>
+              <!-- CONVÊNIO / PARCERIA -->
+              <div id="bloco-convenio" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Organização Parceira</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="conv_nome" class="form-control" placeholder="Nome da organização parceira">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="conv_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_referencia">Número do Convênio / Referência</label>
+                    <input type="text" id="conv_referencia" class="form-control" placeholder="Ex: Convênio 007/2024">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_valor">Valor (R$)</label>
+                    <input type="number" id="conv_valor" class="form-control" placeholder="Ex: 120000.00" min="0" step="0.01">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_inicio">Vigência — Início</label>
+                    <input type="date" id="conv_inicio" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_fim">Vigência — Fim</label>
+                    <input type="date" id="conv_fim" class="form-control">
+                  </div>
                 </div>
+              </div>
 
-              </div></div>
+              <!-- CESSÃO / DOAÇÃO -->
+              <div id="bloco-cessao" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Organização Cedente</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="cessao_nome" class="form-control" placeholder="Nome da organização cedente">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="cessao_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="cessao_referencia">Referência / Processo</label>
+                    <input type="text" id="cessao_referencia" class="form-control" placeholder="Ex: Cessão 001/2023">
+                  </div>
+                  <div class="form-group">
+                    <label for="cessao_data">Data da Cessão</label>
+                    <input type="date" id="cessao_data" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <!-- OUTRO -->
+              <div id="bloco-outro" style="display:none; grid-column:1/-1;">
+                <div class="form-group">
+                  <label for="outro_descricao">Descreva como o sistema foi obtido</label>
+                  <textarea id="outro_descricao" class="form-control" rows="3" placeholder="Descreva a origem e forma de aquisição deste sistema..."></textarea>
+                </div>
+              </div>
 
             </div>
           </div>
@@ -289,9 +430,10 @@
                     <label style="font-size:11px; font-weight:700; color:#1a56db; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
                       <i class="bi bi-window"></i> Frontend
                     </label>
-                    <div class="autocomplete-wrapper">
-                      <input type="text" id="tec_frontend" class="form-control" placeholder="Ex: React, Vue.js, HTML, CSS..." autocomplete="off">
-                      <ul class="autocomplete-list"></ul>
+                    <div class="tec-picker" id="picker-frontend">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-frontend"></div>
+                      <div class="tec-tags"    id="tags-frontend"></div>
                     </div>
                   </div>
 
@@ -299,9 +441,10 @@
                     <label style="font-size:11px; font-weight:700; color:#057a55; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
                       <i class="bi bi-server"></i> Backend
                     </label>
-                    <div class="autocomplete-wrapper">
-                      <input type="text" id="tec_backend" class="form-control" placeholder="Ex: Node.js, PHP, Java, Python..." autocomplete="off">
-                      <ul class="autocomplete-list"></ul>
+                    <div class="tec-picker" id="picker-backend">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-backend"></div>
+                      <div class="tec-tags"    id="tags-backend"></div>
                     </div>
                   </div>
 
@@ -309,9 +452,10 @@
                     <label style="font-size:11px; font-weight:700; color:#c27803; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
                       <i class="bi bi-database"></i> Banco de Dados
                     </label>
-                    <div class="autocomplete-wrapper">
-                      <input type="text" id="tec_banco" class="form-control" placeholder="Ex: MySQL, PostgreSQL, Oracle..." autocomplete="off">
-                      <ul class="autocomplete-list"></ul>
+                    <div class="tec-picker" id="picker-banco">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-banco"></div>
+                      <div class="tec-tags"    id="tags-banco"></div>
                     </div>
                   </div>
 
@@ -319,9 +463,10 @@
                     <label style="font-size:11px; font-weight:700; color:#6c2bd9; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
                       <i class="bi bi-plug"></i> APIs / Integrações
                     </label>
-                    <div class="autocomplete-wrapper">
-                      <input type="text" id="tec_api" class="form-control" placeholder="Ex: REST, SOAP, Gov.br, CadÚnico..." autocomplete="off">
-                      <ul class="autocomplete-list"></ul>
+                    <div class="tec-picker" id="picker-api">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-api"></div>
+                      <div class="tec-tags"    id="tags-api"></div>
                     </div>
                   </div>
 
@@ -329,9 +474,10 @@
                     <label style="font-size:11px; font-weight:700; color:#0e7490; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
                       <i class="bi bi-cloud-upload"></i> Infraestrutura / Deploy
                     </label>
-                    <div class="autocomplete-wrapper">
-                      <input type="text" id="tec_infra" class="form-control" placeholder="Ex: Docker, Nginx, AWS, Linux..." autocomplete="off">
-                      <ul class="autocomplete-list"></ul>
+                    <div class="tec-picker" id="picker-infra">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-infra"></div>
+                      <div class="tec-tags"    id="tags-infra"></div>
                     </div>
                   </div>
 
@@ -342,7 +488,7 @@
 
               <div class="form-group">
                 <label for="hospedagem">Ambiente de Hospedagem</label>
-                <select id="hospedagem" class="form-control">
+                <select id="hospedagem" class="form-control" onchange="toggleServidorProprio()">
                   <option value="">Selecione...</option>
                   <option value="servidor_proprio">Servidor Próprio da Prefeitura</option>
                   <option value="nuvem">Nuvem (AWS, Azure, Google Cloud...)</option>
@@ -350,6 +496,17 @@
                   <option value="contratada">Hospedado pela Empresa Contratada</option>
                   <option value="outro">Outro</option>
                 </select>
+                <div id="bloco-servidor-proprio" style="display:none; margin-top:10px;">
+                  <label style="font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">Tipo de servidor</label>
+                  <div style="display:flex;gap:20px;">
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:500;">
+                      <input type="radio" name="servidor_tipo" value="fisico"> Físico
+                    </label>
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:500;">
+                      <input type="radio" name="servidor_tipo" value="nuvem_propria"> Em Nuvem
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div class="form-group">
@@ -424,15 +581,26 @@
 if (!requireAuth()) { /* redireciona para login */ }
 preencherTopbarUsuario();
 
+function renderCodigoPreview(codigo) {
+  var el  = document.getElementById('codigo-preview');
+  if (!el) return;
+  var idx = (codigo || '').lastIndexOf('-');
+  if (idx === -1) {
+    el.innerHTML = '<span class="codigo-prefix">' + codigo + '</span>';
+  } else {
+    el.innerHTML = '<span class="codigo-prefix">' + codigo.slice(0, idx) + '</span>'
+                 + '<span class="codigo-seq">'    + codigo.slice(idx + 1) + '</span>';
+  }
+}
+
 createAutocomplete(document.getElementById('secretaria'), SECRETARIAS);
+createAutocomplete(document.getElementById('transf_secretaria'), SECRETARIAS);
 
 document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
 
 /* Busca o próximo código disponível na API */
 apiFetch('/api/sistemas/proximo-codigo').then(function (res) {
-  if (res && res.codigo) {
-    document.getElementById('codigo-preview').textContent = res.codigo;
-  }
+  if (res && res.codigo) renderCodigoPreview(res.codigo);
 });
 
 document.getElementById('nome').addEventListener('input', function () {
@@ -446,10 +614,8 @@ async function salvarSistema(e) {
   btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
 
   function parseTec(id) {
-    const v = document.getElementById(id)?.value || '';
-    return v.split(',').map(t => t.trim()).filter(Boolean);
+    return selectedTechs[id] ? [...selectedTechs[id]] : [];
   }
-  const tecStr = null;
 
   const payload = {
     nome:              document.getElementById('nome').value.trim(),
@@ -460,9 +626,30 @@ async function salvarSistema(e) {
     criticidade:       document.getElementById('criticidade').value,
     secretaria:        document.getElementById('secretaria').value.trim(),
     setor:             document.getElementById('setor').value.trim(),
-    resp_tec:          document.getElementById('resp_tec').value.trim(),
-    resp_adm:          document.getElementById('resp_adm').value.trim(),
-    fornecedor:        document.getElementById('fornecedor').value.trim(),
+    resp_tec:          respTecList.filter(function(r) { return r.nome.trim(); }),
+    fornecedor: {
+      nome:     document.getElementById('forn_nome')?.value?.trim()     || null,
+      cnpj:     document.getElementById('forn_cnpj')?.value?.trim()     || null,
+      telefone: document.getElementById('forn_telefone')?.value?.trim() || null,
+      email:    document.getElementById('forn_email')?.value?.trim()    || null,
+    },
+    transf_secretaria: document.getElementById('transf_secretaria')?.value?.trim() || null,
+    transf_data:       document.getElementById('transf_data')?.value               || null,
+    convenio: {
+      nome:       document.getElementById('conv_nome')?.value?.trim()       || null,
+      cnpj:       document.getElementById('conv_cnpj')?.value?.trim()       || null,
+      referencia: document.getElementById('conv_referencia')?.value?.trim() || null,
+      valor:      document.getElementById('conv_valor')?.value              || null,
+      inicio:     document.getElementById('conv_inicio')?.value             || null,
+      fim:        document.getElementById('conv_fim')?.value                || null,
+    },
+    cessao: {
+      nome:       document.getElementById('cessao_nome')?.value?.trim()       || null,
+      cnpj:       document.getElementById('cessao_cnpj')?.value?.trim()       || null,
+      referencia: document.getElementById('cessao_referencia')?.value?.trim() || null,
+      data:       document.getElementById('cessao_data')?.value               || null,
+    },
+    outro_descricao: document.getElementById('outro_descricao')?.value?.trim() || null,
     tecnologias:       [
       ...parseTec('tec_frontend'),
       ...parseTec('tec_backend'),
@@ -482,6 +669,7 @@ async function salvarSistema(e) {
     contrato_fim:      document.getElementById('contrato_fim').value || null,
     contrato_valor:    document.getElementById('contrato_valor').value || null,
     hospedagem:        document.getElementById('hospedagem').value || null,
+    servidor_tipo:     (document.querySelector('input[name="servidor_tipo"]:checked') || {}).value || null,
     acesso:            document.getElementById('acesso').value || null,
   };
 
@@ -501,17 +689,22 @@ async function salvarSistema(e) {
   }
 }
 
-function toggleCamposContrato() {
-  const origem = document.getElementById('origem').value;
-  const bloco  = document.getElementById('bloco-contrato');
-  bloco.style.display = (origem && origem !== 'interno') ? 'block' : 'none';
-  if (bloco.style.display === 'none') {
-    ['contrato_numero','contrato_valor','contrato_inicio','contrato_fim'].forEach(function(id) {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
-    document.getElementById('alerta-vigencia').textContent = '';
+function toggleServidorProprio() {
+  var val = document.getElementById('hospedagem').value;
+  var bloco = document.getElementById('bloco-servidor-proprio');
+  bloco.style.display = val === 'servidor_proprio' ? 'block' : 'none';
+  if (val !== 'servidor_proprio') {
+    document.querySelectorAll('input[name="servidor_tipo"]').forEach(function(r) { r.checked = false; });
   }
+}
+
+function toggleOrigem() {
+  var origem = document.getElementById('origem').value;
+  ['interno','transferencia','licitacao','convenio','cessao','outro'].forEach(function(b) {
+    document.getElementById('bloco-' + b).style.display = 'none';
+  });
+  if (origem) document.getElementById('bloco-' + origem).style.display = 'block';
+  document.getElementById('alerta-vigencia').textContent = '';
 }
 
 function alertaVigencia() {
@@ -541,12 +734,207 @@ function alertaVigencia() {
 
 function limparForm() {
   document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
-  document.getElementById('bloco-contrato').style.display = 'none';
+  document.getElementById('hospedagem').value = '';
+  document.getElementById('bloco-servidor-proprio').style.display = 'none';
+  document.querySelectorAll('input[name="servidor_tipo"]').forEach(function(r) { r.checked = false; });
+  document.getElementById('origem').value = '';
+  ['interno','transferencia','licitacao','convenio','cessao','outro'].forEach(function(b) {
+    document.getElementById('bloco-' + b).style.display = 'none';
+  });
   document.getElementById('alerta-vigencia').textContent = '';
+  respTecList = [{ nome: '', cpf: '' }];
+  renderRespTec();
+  Object.keys(TEC_CONF).forEach(function(id) {
+    selectedTechs[id] = [];
+    var sufixo = id.replace('tec_', '');
+    var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+    if (searchEl) searchEl.value = '';
+    renderTecPicker(id, '');
+  });
   apiFetch('/api/sistemas/proximo-codigo').then(function (res) {
     if (res && res.codigo) document.getElementById('codigo-preview').textContent = res.codigo;
   });
 }
+
+/* ---- Responsáveis Técnicos ---- */
+var respTecList = [{ nome: '', cpf: '' }];
+
+function maskCPF(v) {
+  return v.replace(/\D/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+    .slice(0, 14);
+}
+
+function maskCNPJ(v) {
+  return v.replace(/\D/g, '')
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+    .slice(0, 18);
+}
+
+function maskTelefone(v) {
+  v = v.replace(/\D/g, '').slice(0, 11);
+  if (v.length <= 10)
+    return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d{1,4})/, '$1-$2');
+  return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})/, '$1-$2');
+}
+
+function renderRespTec() {
+  var lista = document.getElementById('resp-tec-lista');
+  lista.innerHTML = respTecList.map(function(r, i) {
+    var podeRemover = respTecList.length > 1;
+    return '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">'
+      + '<input type="text" class="form-control" placeholder="Nome completo" value="' + (r.nome || '') + '"'
+      +   ' oninput="respTecList[' + i + '].nome=this.value">'
+      + '<input type="text" class="form-control" placeholder="000.000.000-00" value="' + (r.cpf || '') + '"'
+      +   ' maxlength="14" style="width:160px;flex-shrink:0;"'
+      +   ' oninput="respTecList[' + i + '].cpf=this.value=maskCPF(this.value)">'
+      + (podeRemover
+          ? '<button type="button" class="btn btn-secondary btn-sm" style="flex-shrink:0;" onclick="removeRespTec(' + i + ')"><i class="bi bi-x"></i></button>'
+          : '')
+      + '</div>';
+  }).join('');
+}
+
+function addRespTec() {
+  respTecList.push({ nome: '', cpf: '' });
+  renderRespTec();
+  var entradas = document.querySelectorAll('#resp-tec-lista input[type="text"]');
+  var ultimo   = entradas[entradas.length - 2];
+  if (ultimo) ultimo.focus();
+}
+
+function removeRespTec(idx) {
+  respTecList.splice(idx, 1);
+  renderRespTec();
+}
+
+renderRespTec();
+
+/* ---- Seletor de tecnologias ---- */
+const TEC_CONF = {
+  tec_frontend: { cor: '#1a56db', fundo: '#e8f0fe', opcoes: ['HTML','CSS','JavaScript','TypeScript','WebAssembly','SVG','JSON','XML','React','Vue.js','Angular','Svelte','Next.js','Nuxt','SvelteKit','Astro','jQuery','Alpine.js','Lit','Ember.js','Backbone.js','Preact','SolidJS','Qwik','Bootstrap','Tailwind CSS','Sass/SCSS','Less','Material UI','Ant Design','Chakra UI','Radix UI','shadcn/ui','Bulma','Foundation','Angular Material','Vuetify','PrimeReact','PrimeVue','PrimeNG'] },
+  tec_backend:  { cor: '#057a55', fundo: '#dcfce7', opcoes: ['PHP','Java','C#','JavaScript','TypeScript','Python','Ruby','Go','Kotlin','Scala','Rust','Elixir','Node.js','.NET','JVM','Laravel','Symfony','CodeIgniter','Spring Boot','Jakarta EE','Java EE','Struts','ASP.NET Core','ASP.NET MVC','Express','NestJS','Fastify','Koa','Django','Flask','FastAPI','Ruby on Rails','Sinatra','Gin','Fiber','Echo','Ktor','Play Framework','Phoenix','Actix Web'] },
+  tec_banco:    { cor: '#b45309', fundo: '#fef3c7', opcoes: ['MySQL','MariaDB','PostgreSQL','Oracle Database','Microsoft SQL Server','SQLite','Firebird','IBM Db2','SAP HANA','Sybase / SAP ASE','Microsoft Access','MongoDB','CouchDB','Couchbase','RavenDB','Firebase Realtime Database','Cloud Firestore','Amazon DynamoDB','Cassandra','ScyllaDB','HBase','Redis','Memcached','Elasticsearch','OpenSearch','Solr','Neo4j','ArangoDB','OrientDB','JanusGraph','InfluxDB','TimescaleDB','Prometheus','ClickHouse','Apache Druid','Snowflake','Google BigQuery','Amazon Redshift','Azure Cosmos DB','CockroachDB','TiDB','YugabyteDB','PlanetScale','Supabase Database','FaunaDB','Realm Database','IndexedDB','LocalStorage','DuckDB','H2 Database'] },
+  tec_api:      { cor: '#6c2bd9', fundo: '#ede9fe', opcoes: ['REST','SOAP','GraphQL','gRPC','Webhooks','WebSocket','Server-Sent Events','JSON-RPC','XML-RPC','OData','OpenAPI / Swagger','Postman','Insomnia','Hoppscotch','cURL','OAuth 2.0','OpenID Connect','SAML','JWT','API Key','Basic Auth','Bearer Token','mTLS','Apache Kafka','RabbitMQ','ActiveMQ','NATS','MQTT','AMQP','Redis Pub/Sub','Redis Streams','Amazon SQS','Amazon SNS','Google Pub/Sub','Azure Service Bus','Apache Camel','MuleSoft','WSO2','Kong Gateway','NGINX API Gateway','Apigee','AWS API Gateway','Azure API Management','Tyk','Traefik','Zapier','Make / Integromat','n8n','Power Automate','IFTTT','Workato','Dell Boomi','Talend','Pentaho Data Integration','Airbyte','Fivetran','Apache NiFi','Logstash','Fluentd','Filebeat','SMTP','IMAP','POP3','FTP','SFTP','FTPS','SSH','LDAP','Active Directory','Microsoft Graph API','Google APIs','Google Maps API','Google Drive API','Google Sheets API','Gmail API','GOV.BR API','Receita Federal APIs','Banco Central APIs','PIX API','Open Finance APIs'] },
+  tec_infra:    { cor: '#0e7490', fundo: '#cffafe', opcoes: ['Linux','Ubuntu Server','Debian','CentOS','Red Hat Enterprise Linux','Windows Server','Nginx','Apache HTTP Server','IIS','Tomcat','PM2','systemd','Docker','Docker Compose','Kubernetes','Helm','Terraform','Ansible','Jenkins','GitHub Actions','GitLab CI/CD','cPanel','Plesk','Traefik','HAProxy','Cloudflare','Certbot','Let\'s Encrypt','OpenSSL','Fail2ban','UFW','iptables','SSH','SFTP','Rsync','SCP','Git','GitHub','GitLab','Bitbucket','Docker Hub','AWS EC2','AWS S3','AWS RDS','AWS CloudFront','AWS Route 53','Azure Virtual Machines','Google Cloud Compute Engine','Heroku','Grafana'] },
+};
+
+const selectedTechs = {
+  tec_frontend: [], tec_backend: [], tec_banco: [], tec_api: [], tec_infra: []
+};
+
+function renderTecPicker(fieldId, filtro) {
+  var conf   = TEC_CONF[fieldId];
+  var sel    = selectedTechs[fieldId];
+  var sufixo = fieldId.replace('tec_', '');
+  var f      = (filtro || '').toLowerCase().trim();
+  var optsEl = document.getElementById('opts-' + sufixo);
+
+  if (!f) {
+    optsEl.innerHTML = '';
+  } else {
+    var disponiveis = conf.opcoes.filter(function(o) {
+      return !sel.includes(o) && o.toLowerCase().includes(f);
+    });
+    var outroBotao = '<span class="tec-opt"'
+      + ' style="border-color:#6b7280;color:#6b7280;border-style:dashed;"'
+      + ' onmouseenter="this.style.background=\'#f3f4f6\'"'
+      + ' onmouseleave="this.style.background=\'transparent\'"'
+      + ' onclick="abrirOutro(\'' + fieldId + '\')">+ Outro</span>';
+    optsEl.innerHTML = disponiveis.map(function(o) {
+        return '<span class="tec-opt"'
+          + ' style="border-color:' + conf.cor + ';color:' + conf.cor + ';"'
+          + ' onmouseenter="this.style.background=\'' + conf.fundo + '\'"'
+          + ' onmouseleave="this.style.background=\'transparent\'"'
+          + ' onclick="selecionarTec(\'' + fieldId + '\',\'' + o.replace(/'/g, "\\'") + '\')">'
+          + o + '</span>';
+      }).join('') + outroBotao;
+  }
+
+  var tagsEl = document.getElementById('tags-' + sufixo);
+  tagsEl.innerHTML = sel.map(function(v, i) {
+    return '<span class="tec-tag" style="background:' + conf.fundo + ';color:' + conf.cor + ';">'
+      + v
+      + '<i class="tec-tag-x" onclick="removerTecTag(\'' + fieldId + '\',' + i + ')" title="Remover">×</i>'
+      + '</span>';
+  }).join('');
+}
+
+function selecionarTec(fieldId, valor) {
+  if (!selectedTechs[fieldId].includes(valor)) selectedTechs[fieldId].push(valor);
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (searchEl) searchEl.value = '';
+  renderTecPicker(fieldId, '');
+}
+
+function removerTecTag(fieldId, idx) {
+  selectedTechs[fieldId].splice(idx, 1);
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  renderTecPicker(fieldId, searchEl ? searchEl.value : '');
+}
+
+function abrirOutro(fieldId) {
+  var sufixo = fieldId.replace('tec_', '');
+  var optsEl = document.getElementById('opts-' + sufixo);
+  optsEl.innerHTML =
+    '<div style="display:flex;gap:8px;align-items:center;width:100%;">'
+    + '<input type="text" id="outro-input-' + sufixo + '" class="form-control"'
+    +   ' placeholder="Nome da tecnologia..." autocomplete="off" style="flex:1;">'
+    + '<button type="button" class="btn btn-primary btn-sm"'
+    +   ' onclick="confirmarOutro(\'' + fieldId + '\')">Adicionar</button>'
+    + '<button type="button" class="btn btn-secondary btn-sm"'
+    +   ' onclick="cancelarOutro(\'' + fieldId + '\')"><i class="bi bi-x"></i></button>'
+    + '</div>';
+  var input = document.getElementById('outro-input-' + sufixo);
+  if (input) {
+    input.focus();
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter')  { e.preventDefault(); confirmarOutro(fieldId); }
+      if (e.key === 'Escape') { cancelarOutro(fieldId); }
+    });
+  }
+}
+
+function confirmarOutro(fieldId) {
+  var sufixo   = fieldId.replace('tec_', '');
+  var input    = document.getElementById('outro-input-' + sufixo);
+  var val      = input ? input.value.trim() : '';
+  if (val && !selectedTechs[fieldId].includes(val)) selectedTechs[fieldId].push(val);
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (searchEl) searchEl.value = '';
+  renderTecPicker(fieldId, '');
+}
+
+function cancelarOutro(fieldId) {
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  renderTecPicker(fieldId, searchEl ? searchEl.value : '');
+}
+
+Object.keys(TEC_CONF).forEach(function(id) {
+  var sufixo   = id.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (!searchEl) return;
+  searchEl.addEventListener('input', function() { renderTecPicker(id, this.value); });
+  searchEl.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var val = this.value.trim();
+    if (val && !selectedTechs[id].includes(val)) {
+      selectedTechs[id].push(val);
+      this.value = '';
+      renderTecPicker(id, '');
+    }
+  });
+  renderTecPicker(id, '');
+});
 </script>
 </body>
 </html>
