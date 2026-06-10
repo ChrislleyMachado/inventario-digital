@@ -27,7 +27,6 @@ function animateStats(stats) {
     'stat-homologacao':     stats.homologacao,
     'stat-criticos':        stats.criticos,
     'stat-descontinuados':  stats.descontinuado,
-    'stat-pendentes':       stats.pendentes,
   };
 
   Object.entries(targets).forEach(function ([id, target]) {
