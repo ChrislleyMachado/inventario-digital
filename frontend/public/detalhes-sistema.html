@@ -1,0 +1,861 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GSIS — Detalhes do Sistema</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>GSIS</h2>
+        <p>Gestão de Sistemas</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item active" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"      class="nav-item" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+      <p class="nav-section-title">Sessão</p>
+      <a href="#" onclick="encerrarSessao()" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>GSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1 id="sys-nome-topbar">Carregando...</h1>
+        <p id="sys-codigo-topbar">Detalhes do sistema</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="sistemas.html" class="btn btn-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- ---- Header do sistema ---- -->
+      <div class="card mb-24" style="margin-bottom: 24px;">
+        <div class="card-body">
+          <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap;">
+            <div style="width:64px; height:64px; background:#dbeafe; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:32px; color:#1a56db; flex-shrink:0;">
+              <i class="bi bi-grid-3x3-gap-fill"></i>
+            </div>
+            <div style="flex:1; min-width:200px;">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;">
+                <h2 id="sys-nome-header" style="font-size:22px; font-weight:800; color:#1e293b;">—</h2>
+                <span id="sys-status-header"></span>
+                <span id="sys-criticidade-header"></span>
+              </div>
+              <code id="sys-codigo-header" style="font-size:12px; background:#f3f4f6; padding:3px 8px; border-radius:4px; color:#475569;">—</code>
+              <p id="sys-descricao-header" style="font-size:13.5px; color:#64748b; margin-top:8px; max-width:600px; line-height:1.5;">—</p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px; text-align:right; flex-shrink:0;">
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Secretaria</div>
+              <div id="sys-secretaria-header" style="font-size:13.5px; font-weight:600; color:#1e293b;">—</div>
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">Implantado em</div>
+              <div id="sys-data-header" style="font-size:13.5px; font-weight:600; color:#1e293b;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- Navegação de abas ---- -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="dados-gerais"   onclick="switchTab('dados-gerais')">
+          <i class="bi bi-info-circle"></i> Dados Gerais
+        </button>
+        <button class="tab-btn" data-tab="documentacao"          onclick="switchTab('documentacao')">
+          <i class="bi bi-file-earmark-text"></i> Documentação
+        </button>
+        <button class="tab-btn" data-tab="repositorio"           onclick="switchTab('repositorio')">
+          <i class="bi bi-code-square"></i> Repositório
+        </button>
+        <button class="tab-btn" data-tab="versoes"               onclick="switchTab('versoes')">
+          <i class="bi bi-tags"></i> Versões
+        </button>
+        <button class="tab-btn" data-tab="responsaveis"          onclick="switchTab('responsaveis')">
+          <i class="bi bi-people"></i> Responsáveis
+        </button>
+        <button class="tab-btn" data-tab="historico"             onclick="switchTab('historico')">
+          <i class="bi bi-clock-history"></i> Histórico
+        </button>
+      </div>
+
+      <!-- ================================================================
+           ABA: DADOS GERAIS
+           ================================================================ -->
+      <div class="tab-panel active" id="panel-dados-gerais">
+
+        <!-- Identificação -->
+        <div class="form-section" style="margin-bottom:16px;">
+          <div class="form-section-header">
+            <i class="bi bi-card-text"></i>
+            <h3>Identificação do Sistema</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="detail-label">Código Interno</div>
+                <div class="detail-value code-font" id="d-codigo">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Nome do Sistema</div>
+                <div class="detail-value" id="d-nome">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Tipo</div>
+                <div class="detail-value" id="d-tipo">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value" id="d-status">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Importância</div>
+                <div class="detail-value" id="d-criticidade">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Data de Registro</div>
+                <div class="detail-value" id="d-data-registro">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Data de Implantação</div>
+                <div class="detail-value" id="d-data-impl">—</div>
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="detail-item" style="margin-bottom:16px;">
+              <div class="detail-label">Descrição</div>
+              <div class="detail-value" id="d-descricao" style="margin-top:6px;line-height:1.6;color:#475569;">—</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Finalidade</div>
+              <div class="detail-value" id="d-finalidade" style="margin-top:6px;line-height:1.6;color:#475569;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Organização Responsável -->
+        <div class="form-section" style="margin-bottom:16px;">
+          <div class="form-section-header">
+            <i class="bi bi-building"></i>
+            <h3>Organização Responsável</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="detail-label">Secretaria Responsável</div>
+                <div class="detail-value" id="d-secretaria">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Setor Responsável</div>
+                <div class="detail-value" id="d-setor">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contrato e Aquisição -->
+        <div class="form-section" style="margin-bottom:16px;">
+          <div class="form-section-header">
+            <i class="bi bi-file-earmark-text"></i>
+            <h3>Contrato e Aquisição</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="detail-label">Origem do Sistema</div>
+                <div class="detail-value" id="d-origem">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Versão Atual</div>
+                <div class="detail-value" id="d-versao">—</div>
+              </div>
+            </div>
+
+            <!-- INTERNO -->
+            <div id="det-bloco-interno" style="display:none;margin-top:16px;">
+              <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;color:#166534;font-size:13px;display:flex;gap:10px;align-items:flex-start;">
+                <i class="bi bi-check-circle-fill" style="font-size:16px;margin-top:1px;flex-shrink:0;"></i>
+                <div>
+                  <strong>Desenvolvimento Interno — SEMEG</strong>
+                  <p style="margin:4px 0 0;opacity:.8;">Sistema desenvolvido diretamente pela equipe da SEMEG. Não há fornecedor externo nem contrato associado.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRANSFERÊNCIA -->
+            <div id="det-bloco-transferencia" style="display:none;margin-top:16px;">
+              <hr class="divider" style="margin-top:0;">
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Secretaria de Origem</div>
+                  <div class="detail-value" id="d-transf-secretaria">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Data de Transferência</div>
+                  <div class="detail-value" id="d-transf-data">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LICITAÇÃO / CONTRATO -->
+            <div id="det-bloco-licitacao" style="display:none;margin-top:16px;">
+              <hr class="divider" style="margin-top:0;">
+              <div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <i class="bi bi-building"></i> Fornecedor / Contratada
+              </div>
+              <div class="detail-grid" style="margin-bottom:16px;">
+                <div class="detail-item">
+                  <div class="detail-label">Nome / Razão Social</div>
+                  <div class="detail-value" id="d-forn-nome">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">CNPJ</div>
+                  <div class="detail-value" id="d-forn-cnpj">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Telefone</div>
+                  <div class="detail-value" id="d-forn-telefone">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">E-mail</div>
+                  <div class="detail-value" id="d-forn-email">—</div>
+                </div>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Contrato / Processo</div>
+                  <div class="detail-value" id="d-contrato-numero">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Valor do Contrato</div>
+                  <div class="detail-value" id="d-contrato-valor">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Vigência — Início</div>
+                  <div class="detail-value" id="d-contrato-inicio">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Vigência — Fim</div>
+                  <div class="detail-value" id="d-contrato-fim">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONVÊNIO / PARCERIA -->
+            <div id="det-bloco-convenio" style="display:none;margin-top:16px;">
+              <hr class="divider" style="margin-top:0;">
+              <div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <i class="bi bi-building"></i> Organização Parceira
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Nome / Razão Social</div>
+                  <div class="detail-value" id="d-conv-nome">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">CNPJ</div>
+                  <div class="detail-value" id="d-conv-cnpj">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Número do Convênio / Referência</div>
+                  <div class="detail-value" id="d-conv-referencia">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Valor</div>
+                  <div class="detail-value" id="d-conv-valor">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Vigência — Início</div>
+                  <div class="detail-value" id="d-conv-inicio">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Vigência — Fim</div>
+                  <div class="detail-value" id="d-conv-fim">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CESSÃO / DOAÇÃO -->
+            <div id="det-bloco-cessao" style="display:none;margin-top:16px;">
+              <hr class="divider" style="margin-top:0;">
+              <div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <i class="bi bi-building"></i> Organização Cedente
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Nome / Razão Social</div>
+                  <div class="detail-value" id="d-cessao-nome">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">CNPJ</div>
+                  <div class="detail-value" id="d-cessao-cnpj">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Referência / Processo</div>
+                  <div class="detail-value" id="d-cessao-referencia">—</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Data da Cessão</div>
+                  <div class="detail-value" id="d-cessao-data">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OUTRO -->
+            <div id="det-bloco-outro" style="display:none;margin-top:16px;">
+              <hr class="divider" style="margin-top:0;">
+              <div class="detail-item">
+                <div class="detail-label">Descrição da Origem</div>
+                <div class="detail-value" id="d-outro-descricao" style="margin-top:6px;line-height:1.6;">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tecnologia e Infraestrutura -->
+        <div class="form-section" style="margin-bottom:16px;">
+          <div class="form-section-header">
+            <i class="bi bi-cpu"></i>
+            <h3>Tecnologia e Infraestrutura</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="detail-item" style="margin-bottom:16px;">
+              <div class="detail-label">Tecnologias Utilizadas</div>
+              <div id="d-tecnologias" class="tags-list" style="margin-top:8px;">—</div>
+            </div>
+            <hr class="divider">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <div class="detail-label">Hospedagem</div>
+                <div class="detail-value" id="d-hospedagem">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Tipo de Acesso</div>
+                <div class="detail-value" id="d-acesso">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">URL de Produção</div>
+                <div class="detail-value" id="d-url-prod">—</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">URL de Homologação</div>
+                <div class="detail-value" id="d-url-homo">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-chat-text"></i>
+            <h3>Observações</h3>
+          </div>
+          <div class="form-section-body">
+            <div id="d-obs" style="font-size:13.5px;line-height:1.7;color:#475569;">—</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================================================================
+           ABA: DOCUMENTAÇÃO
+           ================================================================ -->
+      <div class="tab-panel" id="panel-documentacao">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-file-earmark-text"></i> Documentação do Sistema</div>
+            <button class="btn btn-primary btn-sm" onclick="showToast('Upload disponível na Etapa 2', 'info')">
+              <i class="bi bi-upload"></i> Adicionar Documento
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="doc-list">
+
+              <div class="doc-item">
+                <div class="doc-icon pdf"><i class="bi bi-file-earmark-pdf"></i></div>
+                <div class="doc-info">
+                  <div class="doc-name">Manual Técnico — SySocial v2.1.pdf</div>
+                  <div class="doc-meta">Adicionado em 20/05/2026 &nbsp;·&nbsp; 4.2 MB &nbsp;·&nbsp; Carlos Mendes</div>
+                </div>
+                <div class="doc-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Download disponível na Etapa 2', 'info')">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="doc-item">
+                <div class="doc-icon word"><i class="bi bi-file-earmark-word"></i></div>
+                <div class="doc-info">
+                  <div class="doc-name">Manual do Usuário — SySocial.docx</div>
+                  <div class="doc-meta">Adicionado em 15/04/2026 &nbsp;·&nbsp; 1.8 MB &nbsp;·&nbsp; Maria Santos</div>
+                </div>
+                <div class="doc-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Download disponível na Etapa 2', 'info')">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="doc-item">
+                <div class="doc-icon pdf"><i class="bi bi-file-earmark-pdf"></i></div>
+                <div class="doc-info">
+                  <div class="doc-name">Documento de Requisitos — DRS v1.0.pdf</div>
+                  <div class="doc-meta">Adicionado em 10/01/2024 &nbsp;·&nbsp; 2.6 MB &nbsp;·&nbsp; Carlos Mendes</div>
+                </div>
+                <div class="doc-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Download disponível na Etapa 2', 'info')">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="doc-item">
+                <div class="doc-icon excel"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+                <div class="doc-info">
+                  <div class="doc-name">Mapeamento de Processos — Fluxo AS.xlsx</div>
+                  <div class="doc-meta">Adicionado em 02/03/2024 &nbsp;·&nbsp; 340 KB &nbsp;·&nbsp; Maria Santos</div>
+                </div>
+                <div class="doc-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Download disponível na Etapa 2', 'info')">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           ABA: REPOSITÓRIO
+           ================================================================ -->
+      <div class="tab-panel" id="panel-repositorio">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-code-square"></i> Repositório e Código-Fonte</div>
+          </div>
+          <div class="card-body">
+            <div class="detail-grid" style="margin-bottom:24px;">
+              <div class="detail-item">
+                <div class="detail-label">Plataforma</div>
+                <div class="detail-value">GitLab — Interno</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Branch Principal</div>
+                <div class="detail-value code-font">main</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Último Commit</div>
+                <div class="detail-value">19/05/2026</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Linguagem Principal</div>
+                <div class="detail-value">JavaScript (Node.js)</div>
+              </div>
+            </div>
+
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:20px;">
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">URL do Repositório</div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <code style="font-size:13px; color:#1e293b; flex:1;">https://gitlab.semeg.oriximina.pa.gov.br/sistemas/sysocial</code>
+                <button class="btn btn-secondary btn-sm" onclick="showToast('Link do repositório copiado (simulado)', 'success')">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-label">Código-fonte compactado</div>
+              <div class="detail-value" style="margin-top:8px;">
+                <div class="doc-list">
+                  <div class="doc-item">
+                    <div class="doc-icon zip"><i class="bi bi-file-earmark-zip"></i></div>
+                    <div class="doc-info">
+                      <div class="doc-name">sysocial-v2.1-source.zip</div>
+                      <div class="doc-meta">Versão 2.1 &nbsp;·&nbsp; 18 MB &nbsp;·&nbsp; Enviado em 20/05/2026</div>
+                    </div>
+                    <div class="doc-actions">
+                      <button class="btn btn-secondary btn-sm" onclick="showToast('Download disponível na Etapa 2', 'info')">
+                        <i class="bi bi-download"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           ABA: VERSÕES
+           ================================================================ -->
+      <div class="tab-panel" id="panel-versoes">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-tags"></i> Histórico de Versões</div>
+            <button class="btn btn-primary btn-sm" onclick="showToast('Cadastro de versões disponível na Etapa 2', 'info')">
+              <i class="bi bi-plus"></i> Nova Versão
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="timeline">
+
+              <div class="timeline-item">
+                <div class="timeline-dot green"></div>
+                <div class="timeline-date">20/05/2026</div>
+                <div class="timeline-title">v2.1 — Versão Atual</div>
+                <div class="timeline-desc">Melhoria no módulo de relatórios. Correção de bug na exportação de planilhas. Atualização de segurança do Node.js para v20 LTS.</div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">10/02/2026</div>
+                <div class="timeline-title">v2.0 — Reformulação do módulo social</div>
+                <div class="timeline-desc">Novo módulo de benefícios integrado com CadÚnico nacional. Redesign da interface do usuário. Implementação de autenticação JWT.</div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot orange"></div>
+                <div class="timeline-date">08/09/2025</div>
+                <div class="timeline-title">v1.5 — Patch de segurança</div>
+                <div class="timeline-desc">Atualização de dependências críticas. Correção de vulnerabilidades XSS reportadas em auditoria interna.</div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot gray"></div>
+                <div class="timeline-date">15/03/2024</div>
+                <div class="timeline-title">v1.0 — Implantação inicial</div>
+                <div class="timeline-desc">Primeira versão em produção. Módulos: cadastro de famílias, atendimentos e geração de relatórios básicos.</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           ABA: RESPONSÁVEIS
+           ================================================================ -->
+      <div class="tab-panel" id="panel-responsaveis">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-people"></i> Responsáveis pelo Sistema</div>
+          </div>
+          <div class="card-body">
+            <div class="detail-grid" style="gap:24px;" id="d-responsaveis">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           ABA: HISTÓRICO
+           ================================================================ -->
+      <div class="tab-panel" id="panel-historico">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="bi bi-clock-history"></i> Histórico de Alterações</div>
+          </div>
+          <div class="card-body">
+            <div class="timeline" id="d-historico">
+              <div style="text-align:center;padding:30px;color:#94a3b8;">Carregando...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      GSIS — Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+<script>
+const TIPO_MAP = {
+  web: 'Aplicação Web', desktop: 'Aplicação Desktop', mobile: 'Aplicação Mobile',
+  api: 'API / Serviço', portal: 'Portal Público', erp: 'ERP / Sistema Integrado', outro: 'Outro',
+};
+
+const ORIGEM_MAP = {
+  interno:       'Desenvolvimento Interno — SEMEG',
+  transferencia: 'Desenvolvido por outra Secretaria',
+  licitacao:     'Licitação / Contrato',
+  convenio:      'Convênio / Parceria',
+  cessao:        'Cessão / Doação',
+  outro:         'Outro',
+};
+
+const HOSPEDAGEM_MAP = {
+  servidor_proprio: 'Servidor Próprio da Prefeitura',
+  nuvem:            'Nuvem',
+  datacenter:       'Data Center Terceirizado',
+  contratada:       'Hospedado pela Contratada',
+  outro:            'Outro',
+};
+
+const ACESSO_MAP = {
+  intranet: 'Somente Intranet',
+  internet: 'Acessível pela Internet',
+  ambos:    'Intranet e Internet',
+};
+
+const ACAO_MAP = {
+  criacao: { label: 'Sistema cadastrado', cor: 'green' },
+  edicao:  { label: 'Dados atualizados',  cor: 'blue'  },
+  remocao: { label: 'Sistema removido',   cor: 'gray'  },
+};
+
+function cardResponsavel(nome, detalhe, corBg, corTexto) {
+  if (!nome) return '';
+  const inicial = (nome[0] || '?').toUpperCase();
+  return `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:20px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:48px;height:48px;background:${corBg};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:${corTexto};">${inicial}</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;">${nome}</div>
+        <div style="font-size:12px;color:#64748b;">${detalhe || ''}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function setText(id, val)  { const el = document.getElementById(id); if (el) el.textContent = val || '—'; }
+function setHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML  = html; }
+
+document.addEventListener('DOMContentLoaded', async function () {
+  if (!requireAuth()) return;
+  preencherTopbarUsuario();
+
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) { showToast('ID do sistema não informado na URL', 'error'); return; }
+
+  const s = await apiFetch(`/api/sistemas/${id}`);
+  if (!s) return;
+
+  /* Topbar */
+  setText('sys-nome-topbar',   s.nome);
+  setText('sys-codigo-topbar', `Detalhes do sistema · ${s.codigo}`);
+
+  /* Header */
+  setText('sys-nome-header',        s.nome);
+  setHTML('sys-status-header',      statusBadge(s.status));
+  setHTML('sys-criticidade-header', criticidadeBadge(s.criticidade));
+  setText('sys-codigo-header',      s.codigo);
+  setText('sys-descricao-header',   s.descricao);
+  setText('sys-secretaria-header',  s.secretaria);
+  setText('sys-data-header',        formatDate(s.data_implantacao));
+
+  /* === IDENTIFICAÇÃO === */
+  setText('d-codigo',        s.codigo);
+  setText('d-nome',          s.nome);
+  setText('d-tipo',          TIPO_MAP[s.tipo] || s.tipo);
+  setHTML('d-status',        statusBadge(s.status));
+  setHTML('d-criticidade',   criticidadeBadge(s.criticidade));
+  setText('d-data-registro', formatDate(s.data_registro || s.criado_em));
+  setText('d-data-impl',     formatDate(s.data_implantacao));
+  setText('d-descricao',     s.descricao);
+  setText('d-finalidade',    s.finalidade);
+
+  /* === ORGANIZAÇÃO === */
+  setText('d-secretaria', s.secretaria);
+  setText('d-setor',      s.setor);
+
+  /* === CONTRATO E AQUISIÇÃO === */
+  setText('d-origem', ORIGEM_MAP[s.origem] || s.origem);
+  setText('d-versao', s.versao_atual);
+
+  ['interno','transferencia','licitacao','convenio','cessao','outro'].forEach(function(b) {
+    var el = document.getElementById('det-bloco-' + b);
+    if (el) el.style.display = 'none';
+  });
+
+  var origem = s.origem || '';
+
+  if (origem === 'interno') {
+    var el = document.getElementById('det-bloco-interno');
+    if (el) el.style.display = '';
+
+  } else if (origem === 'transferencia') {
+    var el = document.getElementById('det-bloco-transferencia');
+    if (el) el.style.display = '';
+    setText('d-transf-secretaria', s.transf_secretaria);
+    setText('d-transf-data',       formatDate(s.transf_data));
+
+  } else if (origem === 'licitacao') {
+    var el = document.getElementById('det-bloco-licitacao');
+    if (el) el.style.display = '';
+    var forn = s.fornecedor || {};
+    setText('d-forn-nome',     typeof forn === 'object' ? forn.nome     : forn);
+    setText('d-forn-cnpj',     typeof forn === 'object' ? forn.cnpj     : '');
+    setText('d-forn-telefone', typeof forn === 'object' ? forn.telefone : '');
+    setText('d-forn-email',    typeof forn === 'object' ? forn.email    : '');
+    setText('d-contrato-numero', s.contrato_numero);
+    setText('d-contrato-inicio', formatDate(s.contrato_inicio));
+    if (s.contrato_fim) {
+      var dias = Math.ceil((new Date(s.contrato_fim) - new Date()) / 86400000);
+      var fimTxt = formatDate(s.contrato_fim);
+      if (dias < 0)        fimTxt += '  ⚠ Vencido há ' + Math.abs(dias) + ' dias';
+      else if (dias <= 30) fimTxt += '  ⚠ Vence em ' + dias + ' dias';
+      setText('d-contrato-fim', fimTxt);
+    }
+    if (s.contrato_valor) {
+      setText('d-contrato-valor',
+        'R$ ' + Number(s.contrato_valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
+    }
+
+  } else if (origem === 'convenio') {
+    var el = document.getElementById('det-bloco-convenio');
+    if (el) el.style.display = '';
+    var conv = s.convenio || {};
+    setText('d-conv-nome',       conv.nome);
+    setText('d-conv-cnpj',       conv.cnpj);
+    setText('d-conv-referencia', conv.referencia);
+    if (conv.valor) setText('d-conv-valor',
+      'R$ ' + Number(conv.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
+    setText('d-conv-inicio', formatDate(conv.inicio));
+    setText('d-conv-fim',    formatDate(conv.fim));
+
+  } else if (origem === 'cessao') {
+    var el = document.getElementById('det-bloco-cessao');
+    if (el) el.style.display = '';
+    var cess = s.cessao || {};
+    setText('d-cessao-nome',       cess.nome);
+    setText('d-cessao-cnpj',       cess.cnpj);
+    setText('d-cessao-referencia', cess.referencia);
+    setText('d-cessao-data',       formatDate(cess.data));
+
+  } else if (origem === 'outro') {
+    var el = document.getElementById('det-bloco-outro');
+    if (el) el.style.display = '';
+    setText('d-outro-descricao', s.outro_descricao);
+  }
+
+  /* === TECNOLOGIA E INFRAESTRUTURA === */
+  var tecs = Array.isArray(s.tecnologias) ? s.tecnologias : [];
+  setHTML('d-tecnologias', tecs.length
+    ? tecs.map(function(t) { return '<span class="tag tech">' + t + '</span>'; }).join('')
+    : '<span style="color:#94a3b8;">Não informado</span>');
+
+  setText('d-hospedagem', HOSPEDAGEM_MAP[s.hospedagem] || s.hospedagem);
+  setText('d-acesso',     ACESSO_MAP[s.acesso] || s.acesso);
+
+  var urlProd = s.url_producao
+    ? '<a href="' + s.url_producao + '" target="_blank" style="color:var(--primary);"><i class="bi bi-box-arrow-up-right"></i> ' + s.url_producao + '</a>'
+    : '—';
+  var urlHomo = s.url_homologacao
+    ? '<a href="' + s.url_homologacao + '" target="_blank" style="color:var(--primary);"><i class="bi bi-box-arrow-up-right"></i> ' + s.url_homologacao + '</a>'
+    : '—';
+  setHTML('d-url-prod', urlProd);
+  setHTML('d-url-homo', urlHomo);
+
+  /* === OBSERVAÇÕES === */
+  setText('d-obs', s.observacoes);
+
+  /* === RESPONSÁVEIS (aba separada) === */
+  var resps = Array.isArray(s.resp_tec) ? s.resp_tec : (s.resp_tec ? [{ nome: s.resp_tec }] : []);
+  var respCards = resps.length
+    ? resps.map(function(r) {
+        var nome = typeof r === 'object' ? r.nome : r;
+        var det  = (typeof r === 'object' && r.cpf) ? 'CPF: ' + r.cpf : 'Responsável Técnico';
+        return cardResponsavel(nome, det, '#dbeafe', '#1a56db');
+      }).join('')
+    : '<p style="color:#94a3b8;">Nenhum responsável técnico cadastrado.</p>';
+  setHTML('d-responsaveis', respCards);
+
+  /* Histórico */
+  carregarHistorico(id);
+});
+
+async function carregarHistorico(id) {
+  const rows = await apiFetch(`/api/sistemas/${id}/historico`);
+  const container = document.getElementById('d-historico');
+  if (!container) return;
+
+  if (!rows || !rows.length) {
+    container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum registro no histórico.</p>';
+    return;
+  }
+
+  const cores = { criacao: 'green', edicao: 'blue', remocao: 'gray' };
+  container.innerHTML = rows.map(h => {
+    const cor   = cores[h.acao] || '';
+    const label = ACAO_MAP[h.acao]?.label || h.acao;
+    return `<div class="timeline-item">
+      <div class="timeline-dot ${cor}"></div>
+      <div class="timeline-date">${formatDateTime(h.criado_em)}</div>
+      <div class="timeline-title">${label}</div>
+      <div class="timeline-desc">${h.descricao || ''} ${h.usuario ? `— <strong>${h.usuario}</strong>` : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const btn   = document.querySelector('[data-tab="' + tabId + '"]');
+  const panel = document.getElementById('panel-' + tabId);
+  if (btn)   btn.classList.add('active');
+  if (panel) panel.classList.add('active');
+}
+</script>
+</body>
+</html>
+
+

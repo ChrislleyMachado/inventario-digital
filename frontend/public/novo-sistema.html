@@ -1,0 +1,1302 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GSIS — Novo Sistema</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    /* opções disponíveis (outline) */
+    .tec-options { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; min-height:0; }
+    .tec-opt {
+      display:inline-flex; align-items:center;
+      padding:3px 12px; border-radius:999px;
+      font-size:12px; font-weight:600; line-height:1.5;
+      cursor:pointer; white-space:nowrap;
+      border:1.5px solid; background:transparent;
+      transition:background .12s;
+    }
+    .tec-opt-empty { font-size:12px; color:#9ca3af; font-style:italic; padding:2px 0; }
+    /* tags selecionadas (filled) */
+    .tec-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; min-height:0; }
+    .tec-tags:not(:empty) { padding-top:2px; border-top:1px dashed #e5e7eb; }
+    .tec-tag  {
+      display:inline-flex; align-items:center; gap:3px;
+      padding:3px 10px 3px 12px; border-radius:999px;
+      font-size:12px; font-weight:600; line-height:1.5; white-space:nowrap;
+    }
+    .tec-tag-x {
+      cursor:pointer; opacity:.5; font-size:15px; line-height:1; margin-left:2px;
+      font-style:normal;
+    }
+    .tec-tag-x:hover { opacity:1; }
+    .tec-search { margin-bottom:0; }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+      <div class="sidebar-brand-text">
+        <h2>GSIS</h2>
+        <p>Gestão de Sistemas</p>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <p class="nav-section-title">Principal</p>
+      <a href="dashboard.html"    class="nav-item" data-page="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+      <a href="sistemas.html"     class="nav-item" data-page="sistemas">
+        <i class="bi bi-grid-3x3-gap"></i><span>Sistemas</span>
+      </a>
+      <a href="novo-sistema.html" class="nav-item active" data-page="novo-sistema">
+        <i class="bi bi-plus-circle"></i><span>Novo Sistema</span>
+      </a>
+      <p class="nav-section-title">Administração</p>
+      <a href="usuarios.html"      class="nav-item" data-page="usuarios">
+        <i class="bi bi-people"></i><span>Usuários</span>
+      </a>
+      <a href="configuracoes.html" class="nav-item" data-page="configuracoes">
+        <i class="bi bi-gear"></i><span>Configurações</span>
+      </a>
+      <p class="nav-section-title">Sessão</p>
+      <a href="#" onclick="encerrarSessao()" class="nav-item danger">
+        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <p>GSIS v1.0</p>
+      <p class="version">Prefeitura de Oriximiná — SEMEG</p>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <header class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-title">
+        <h1>Novo Sistema</h1>
+        <p>Cadastrar sistema no inventário municipal</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="sistemas.html" class="btn btn-secondary btn-sm">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+        <div class="topbar-user">
+          <div class="topbar-avatar">A</div>
+          <div class="topbar-user-info">
+            <strong>Administrador</strong>
+            <small>SEMEG · TI</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <div class="page-header-text">
+          <h2>Cadastrar novo sistema</h2>
+          <p>Preencha as informações do sistema para adicioná-lo ao inventário municipal</p>
+        </div>
+      </div>
+
+      <!-- Preview do código interno -->
+      <div class="code-preview-box">
+        <div class="code-preview-label">Código Interno do Sistema</div>
+        <div class="code-preview-value" id="codigo-preview">
+          <span class="codigo-prefix">GSIS26</span><span class="codigo-seq codigo-seq--carregando">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+        <div class="code-preview-note">
+          Prévia calculada em tempo real com base nos registros existentes. O código definitivo é gerado ao salvar.
+        </div>
+      </div>
+
+      <form id="form-novo-sistema" onsubmit="salvarSistema(event)">
+
+        <!-- ---- Identificação ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-card-text"></i>
+            <h3>Identificação do Sistema</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group full">
+                <label for="nome">Nome do Sistema <span class="req">*</span></label>
+                <input type="text" id="nome" class="form-control" placeholder="Ex: SySocial" required>
+              </div>
+
+              <div class="form-group full">
+                <label for="descricao">Descrição <span class="req">*</span></label>
+                <textarea id="descricao" class="form-control" placeholder="Descreva brevemente o que o sistema faz" rows="3" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="tipo">Tipo do Sistema <span class="req">*</span></label>
+                <select id="tipo" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="web">Aplicação Web</option>
+                  <option value="desktop">Aplicação Desktop</option>
+                  <option value="mobile">Aplicação Mobile</option>
+                  <option value="api">API / Serviço</option>
+                  <option value="portal">Portal Público</option>
+                  <option value="erp">ERP / Sistema Integrado</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="status">Status <span class="req">*</span></label>
+                <select id="status" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="producao">Ativo</option>
+                  <option value="desenvolvimento">Desenvolvimento</option>
+                  <option value="homologacao">Homologação</option>
+                  <option value="descontinuado">Descontinuado</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="criticidade">Importância <span class="req">*</span></label>
+                <select id="criticidade" class="form-control" required>
+                  <option value="">Selecione...</option>
+                  <option value="critica">Crítica — Sistema essencial</option>
+                  <option value="alta">Alta — Impacto significativo</option>
+                  <option value="media">Média — Operação auxiliar</option>
+                  <option value="baixa">Baixa — Uso interno eventual</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="data_registro">Data de Registro <span class="req">*</span></label>
+                <input type="date" id="data_registro" class="form-control" readonly style="background:var(--gray-light); cursor:default;">
+                <p class="form-hint">Preenchida automaticamente com a data de hoje</p>
+              </div>
+
+              <div class="form-group">
+                <label for="data_impl">Data de Implantação</label>
+                <input type="date" id="data_impl" class="form-control">
+                <p class="form-hint">Preencha caso o sistema já esteja ou tenha sido implantado</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Organização ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-building"></i>
+            <h3>Organização Responsável</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="secretaria">Secretaria Responsável <span class="req">*</span></label>
+                <div class="autocomplete-wrapper">
+                  <input type="text" id="secretaria" class="form-control"
+                    placeholder="Digite para buscar a secretaria..." autocomplete="off" required>
+                  <ul class="autocomplete-list"></ul>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="setor">Setor Responsável</label>
+                <input type="text" id="setor" class="form-control" placeholder="Ex: DGRH, Protocolo Geral">
+              </div>
+
+              <div class="form-group full">
+                <label>Responsáveis Técnicos <span class="req">*</span></label>
+                <div id="resp-tec-lista"></div>
+                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="addRespTec()">
+                  <i class="bi bi-plus-circle"></i> Adicionar responsável
+                </button>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Contrato e Aquisição ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-file-earmark-text"></i>
+            <h3>Contrato e Aquisição</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="origem">Origem do Sistema <span class="req">*</span></label>
+                <select id="origem" class="form-control" required onchange="toggleOrigem()">
+                  <option value="">Selecione...</option>
+                  <option value="interno">Desenvolvimento Interno — SEMEG</option>
+                  <option value="transferencia">Desenvolvido por outra Secretaria</option>
+                  <option value="licitacao">Licitação / Contrato</option>
+                  <option value="convenio">Convênio / Parceria</option>
+                  <option value="cessao">Cessão / Doação</option>
+                  <option value="outro">Outro</option>
+                </select>
+                <p class="form-hint">Informe como este sistema foi obtido ou desenvolvido</p>
+              </div>
+
+              <div class="form-group">
+                <label for="versao_atual">Versão Atual</label>
+                <input type="text" id="versao_atual" class="form-control" placeholder="Ex: 2.1.0, 2024.3">
+              </div>
+
+              <!-- INTERNO -->
+              <div id="bloco-interno" style="display:none; grid-column:1/-1;">
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;color:#166534;font-size:13px;display:flex;gap:10px;align-items:flex-start;">
+                  <i class="bi bi-check-circle-fill" style="font-size:16px;margin-top:1px;flex-shrink:0;"></i>
+                  <div>
+                    <strong>Desenvolvimento Interno — SEMEG</strong>
+                    <p style="margin:4px 0 0;opacity:.8;">Sistema desenvolvido diretamente pela equipe da SEMEG. Não há fornecedor externo nem contrato associado.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TRANSFERÊNCIA -->
+              <div id="bloco-transferencia" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="transf_secretaria">Secretaria de Origem</label>
+                    <div class="autocomplete-wrapper">
+                      <input type="text" id="transf_secretaria" class="form-control" placeholder="Secretaria que desenvolveu o sistema..." autocomplete="off">
+                      <ul class="autocomplete-list"></ul>
+                    </div>
+                    <p class="form-hint">Secretaria responsável pelo desenvolvimento original</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="transf_data">Data de Transferência</label>
+                    <input type="date" id="transf_data" class="form-control">
+                    <p class="form-hint">Data em que a SEMEG assumiu a responsabilidade</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LICITAÇÃO / CONTRATO -->
+              <div id="bloco-licitacao" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Fornecedor / Contratada</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="forn_nome" class="form-control" placeholder="Ex: Empresa Soluções Ltda">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="forn_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Telefone</label>
+                        <input type="text" id="forn_telefone" class="form-control" placeholder="(00) 00000-0000" maxlength="15" oninput="this.value=maskTelefone(this.value)">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">E-mail</label>
+                        <input type="email" id="forn_email" class="form-control" placeholder="contato@empresa.com.br">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_numero">Número do Contrato / Processo</label>
+                    <input type="text" id="contrato_numero" class="form-control" placeholder="Ex: Contrato 012/2023 — Proc. 0234/2023">
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_valor">Valor do Contrato (R$)</label>
+                    <input type="number" id="contrato_valor" class="form-control" placeholder="Ex: 48000.00" min="0" step="0.01">
+                    <p class="form-hint">Valor total do contrato ou licença</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_inicio">Vigência — Início</label>
+                    <input type="date" id="contrato_inicio" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="contrato_fim">Vigência — Fim</label>
+                    <input type="date" id="contrato_fim" class="form-control" oninput="alertaVigencia()">
+                    <p class="form-hint" id="alerta-vigencia"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONVÊNIO / PARCERIA -->
+              <div id="bloco-convenio" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Organização Parceira</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="conv_nome" class="form-control" placeholder="Nome da organização parceira">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="conv_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_referencia">Número do Convênio / Referência</label>
+                    <input type="text" id="conv_referencia" class="form-control" placeholder="Ex: Convênio 007/2024">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_valor">Valor (R$)</label>
+                    <input type="number" id="conv_valor" class="form-control" placeholder="Ex: 120000.00" min="0" step="0.01">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_inicio">Vigência — Início</label>
+                    <input type="date" id="conv_inicio" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="conv_fim">Vigência — Fim</label>
+                    <input type="date" id="conv_fim" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <!-- CESSÃO / DOAÇÃO -->
+              <div id="bloco-cessao" style="display:none; grid-column:1/-1;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="bi bi-building"></i> Organização Cedente</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">Nome / Razão Social</label>
+                        <input type="text" id="cessao_nome" class="form-control" placeholder="Nome da organização cedente">
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;display:block;">CNPJ</label>
+                        <input type="text" id="cessao_cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" oninput="this.value=maskCNPJ(this.value)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="cessao_referencia">Referência / Processo</label>
+                    <input type="text" id="cessao_referencia" class="form-control" placeholder="Ex: Cessão 001/2023">
+                  </div>
+                  <div class="form-group">
+                    <label for="cessao_data">Data da Cessão</label>
+                    <input type="date" id="cessao_data" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <!-- OUTRO -->
+              <div id="bloco-outro" style="display:none; grid-column:1/-1;">
+                <div class="form-group">
+                  <label for="outro_descricao">Descreva como o sistema foi obtido</label>
+                  <textarea id="outro_descricao" class="form-control" rows="3" placeholder="Descreva a origem e forma de aquisição deste sistema..."></textarea>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Tecnologia e Infraestrutura ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-cpu"></i>
+            <h3>Tecnologia e Infraestrutura</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-grid">
+
+              <div class="form-group full">
+                <label>Tecnologias Utilizadas</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px;">
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#1a56db; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-window"></i> Frontend
+                    </label>
+                    <div class="tec-picker" id="picker-frontend">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-frontend"></div>
+                      <div class="tec-tags"    id="tags-frontend"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#057a55; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-server"></i> Backend
+                    </label>
+                    <div class="tec-picker" id="picker-backend">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-backend"></div>
+                      <div class="tec-tags"    id="tags-backend"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#c27803; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-database"></i> Banco de Dados
+                    </label>
+                    <div class="tec-picker" id="picker-banco">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-banco"></div>
+                      <div class="tec-tags"    id="tags-banco"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style="font-size:11px; font-weight:700; color:#6c2bd9; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-plug"></i> APIs / Integrações
+                    </label>
+                    <div class="tec-picker" id="picker-api">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-api"></div>
+                      <div class="tec-tags"    id="tags-api"></div>
+                    </div>
+                  </div>
+
+                  <div style="grid-column:1/-1;">
+                    <label style="font-size:11px; font-weight:700; color:#0e7490; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                      <i class="bi bi-cloud-upload"></i> Infraestrutura / Deploy
+                    </label>
+                    <div class="tec-picker" id="picker-infra">
+                      <input type="text" class="form-control tec-search" placeholder="Buscar... ou ↵ para adicionar" autocomplete="off">
+                      <div class="tec-options" id="opts-infra"></div>
+                      <div class="tec-tags"    id="tags-infra"></div>
+                    </div>
+                  </div>
+
+                </div>
+                <p class="form-hint" style="margin-top:8px;">Separe as tecnologias de cada grupo por vírgula</p>
+              </div>
+
+
+              <div class="form-group">
+                <label for="hospedagem">Ambiente de Hospedagem</label>
+                <select id="hospedagem" class="form-control">
+                  <option value="">Selecione...</option>
+                  <option value="servidor_proprio_fisico">Servidor Próprio da Prefeitura (Servidor Físico)</option>
+                  <option value="servidor_proprio_nuvem">Servidor Próprio da Prefeitura (Servidor em Nuvem)</option>
+                  <option value="nuvem">Nuvem (AWS, Azure, Google Cloud...)</option>
+                  <option value="datacenter">Data Center Terceirizado</option>
+                  <option value="contratada">Hospedado pela Empresa Contratada</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="acesso">Tipo de Acesso</label>
+                <select id="acesso" class="form-control">
+                  <option value="">Selecione...</option>
+                  <option value="intranet">Somente Intranet (rede interna)</option>
+                  <option value="internet">Acessível pela Internet</option>
+                  <option value="ambos">Intranet e Internet</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="url_prod">URL de Produção</label>
+                <input type="url" id="url_prod" class="form-control" placeholder="https://sistema.oriximina.pa.gov.br">
+              </div>
+
+              <div class="form-group">
+                <label for="url_homo">URL de Homologação</label>
+                <input type="url" id="url_homo" class="form-control" placeholder="https://hom.sistema.oriximina.pa.gov.br">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Documentação ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <h3>Documentação</h3>
+          </div>
+          <div class="form-section-body">
+
+            <p class="text-muted text-sm" style="margin-bottom:20px;">
+              Anexe os três documentos PDF do sistema. Cada documento tem limite individual de <strong>10 MB</strong>.
+            </p>
+
+            <div style="display:flex; flex-direction:column; gap:16px;">
+
+              <!-- 1. Técnica Descritiva -->
+              <div id="doc-card-tecnica" class="doc-card">
+                <div class="doc-card-header">
+                  <span class="doc-card-num">1</span>
+                  <div>
+                    <strong class="doc-card-title">Documentação Técnica Descritiva</strong>
+                    <p class="doc-card-desc">Explica como o sistema é estruturado e funciona internamente.</p>
+                  </div>
+                </div>
+                <div id="doc-upload-tecnica">
+                  <label for="doc-file-tecnica" class="doc-dropzone">
+                    <i class="bi bi-file-earmark-arrow-up doc-dropzone-icon"></i>
+                    <span class="doc-dropzone-title">Clique para selecionar o PDF</span>
+                    <span class="doc-dropzone-hint">ou arraste e solte aqui &nbsp;·&nbsp; máx. 10 MB</span>
+                  </label>
+                  <input type="file" id="doc-file-tecnica" accept=".pdf,application/pdf" style="display:none;" onchange="onDocChange('tecnica',this)">
+                </div>
+                <div id="doc-info-tecnica" class="doc-file-selected">
+                  <i class="bi bi-file-earmark-pdf" style="font-size:22px;color:#c81e1e;flex-shrink:0;"></i>
+                  <div style="flex:1;min-width:0;">
+                    <div id="doc-filename-tecnica" style="font-size:13px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                    <div id="doc-filesize-tecnica" style="font-size:11px;color:#64748b;"></div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="removerDocFixo('tecnica')"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+
+              <!-- 2. Implantação e Operação -->
+              <div id="doc-card-implantacao" class="doc-card">
+                <div class="doc-card-header">
+                  <span class="doc-card-num">2</span>
+                  <div>
+                    <strong class="doc-card-title">Documentação de Implantação e Operação</strong>
+                    <p class="doc-card-desc">Como colocar o sistema no ar, manter, atualizar, fazer backup e corrigir falhas.</p>
+                  </div>
+                </div>
+                <div id="doc-upload-implantacao">
+                  <label for="doc-file-implantacao" class="doc-dropzone">
+                    <i class="bi bi-file-earmark-arrow-up doc-dropzone-icon"></i>
+                    <span class="doc-dropzone-title">Clique para selecionar o PDF</span>
+                    <span class="doc-dropzone-hint">ou arraste e solte aqui &nbsp;·&nbsp; máx. 10 MB</span>
+                  </label>
+                  <input type="file" id="doc-file-implantacao" accept=".pdf,application/pdf" style="display:none;" onchange="onDocChange('implantacao',this)">
+                </div>
+                <div id="doc-info-implantacao" class="doc-file-selected">
+                  <i class="bi bi-file-earmark-pdf" style="font-size:22px;color:#c81e1e;flex-shrink:0;"></i>
+                  <div style="flex:1;min-width:0;">
+                    <div id="doc-filename-implantacao" style="font-size:13px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                    <div id="doc-filesize-implantacao" style="font-size:11px;color:#64748b;"></div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="removerDocFixo('implantacao')"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+
+              <!-- 3. Registro / Autoria -->
+              <div id="doc-card-autoria" class="doc-card">
+                <div class="doc-card-header">
+                  <span class="doc-card-num">3</span>
+                  <div>
+                    <strong class="doc-card-title">Documentação para Registro/Autoria</strong>
+                    <p class="doc-card-desc">Prova autoria, titularidade, versão, originalidade e identidade técnica do software.</p>
+                  </div>
+                </div>
+                <div id="doc-upload-autoria">
+                  <label for="doc-file-autoria" class="doc-dropzone">
+                    <i class="bi bi-file-earmark-arrow-up doc-dropzone-icon"></i>
+                    <span class="doc-dropzone-title">Clique para selecionar o PDF</span>
+                    <span class="doc-dropzone-hint">ou arraste e solte aqui &nbsp;·&nbsp; máx. 10 MB</span>
+                  </label>
+                  <input type="file" id="doc-file-autoria" accept=".pdf,application/pdf" style="display:none;" onchange="onDocChange('autoria',this)">
+                </div>
+                <div id="doc-info-autoria" class="doc-file-selected">
+                  <i class="bi bi-file-earmark-pdf" style="font-size:22px;color:#c81e1e;flex-shrink:0;"></i>
+                  <div style="flex:1;min-width:0;">
+                    <div id="doc-filename-autoria" style="font-size:13px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                    <div id="doc-filesize-autoria" style="font-size:11px;color:#64748b;"></div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="removerDocFixo('autoria')"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Observações ---- -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="bi bi-chat-text"></i>
+            <h3>Observações</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-group">
+              <label for="observacoes">Observações gerais</label>
+              <textarea id="observacoes" class="form-control" rows="4"
+                placeholder="Informações adicionais, histórico relevante, restrições, dependências externas..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Botões ---- -->
+        <div class="d-flex gap-12" style="justify-content: flex-end; margin-top: 8px;">
+          <a href="sistemas.html" class="btn btn-secondary">
+            <i class="bi bi-x"></i> Cancelar
+          </a>
+          <button type="reset" class="btn btn-secondary" onclick="limparForm()">
+            <i class="bi bi-arrow-counterclockwise"></i> Limpar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-floppy"></i> Salvar Sistema
+          </button>
+        </div>
+
+      </form>
+
+    </main>
+
+    <footer class="app-footer">
+      GSIS — Gestão de Sistemas Municipais &nbsp;·&nbsp;
+      Prefeitura Municipal de Oriximiná &nbsp;·&nbsp; SEMEG © 2026
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+<script>
+if (!requireAuth()) { /* redireciona para login */ }
+preencherTopbarUsuario();
+
+function _prefixoAtual() {
+  return 'GSIS' + String(new Date().getFullYear()).slice(2);
+}
+
+function renderCodigoPreview(codigo, estado) {
+  var el = document.getElementById('codigo-preview');
+  if (!el) return;
+  if (estado === 'carregando') {
+    el.innerHTML = '<span class="codigo-prefix">' + _prefixoAtual() + '</span>'
+                 + '<span class="codigo-seq codigo-seq--carregando">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+    return;
+  }
+  if (estado === 'erro') {
+    el.innerHTML = '<span class="codigo-prefix">' + _prefixoAtual() + '</span>'
+                 + '<span class="codigo-seq codigo-seq--erro" title="Clique para tentar novamente" onclick="buscarProximoCodigo()">ERRO ↺</span>';
+    return;
+  }
+  var idx = (codigo || '').lastIndexOf('-');
+  if (idx === -1) {
+    el.innerHTML = '<span class="codigo-prefix">' + codigo + '</span>';
+  } else {
+    el.innerHTML = '<span class="codigo-prefix">' + codigo.slice(0, idx) + '</span>'
+                 + '<span class="codigo-seq">'    + codigo.slice(idx + 1) + '</span>';
+  }
+}
+
+function buscarProximoCodigo() {
+  renderCodigoPreview(null, 'carregando');
+  apiFetch('/api/sistemas/proximo-codigo').then(function (res) {
+    if (res && res.codigo) {
+      renderCodigoPreview(res.codigo);
+    } else {
+      renderCodigoPreview(null, 'erro');
+    }
+  }).catch(function () {
+    renderCodigoPreview(null, 'erro');
+  });
+}
+
+createAutocomplete(document.getElementById('secretaria'), SECRETARIAS);
+createAutocomplete(document.getElementById('transf_secretaria'), SECRETARIAS);
+
+document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
+
+/* Busca o próximo código disponível na API e mantém atualizado em tempo real */
+buscarProximoCodigo();
+
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden) buscarProximoCodigo();
+});
+
+async function salvarSistema(e) {
+  e.preventDefault();
+
+  /* Validação dos campos obrigatórios sem atributo HTML required */
+  const secretariaVal = document.getElementById('secretaria').value.trim();
+  if (!secretariaVal) {
+    showToast('Secretaria Responsável é obrigatória.', 'error');
+    document.getElementById('secretaria').focus();
+    return;
+  }
+  const respValidos = respTecList.filter(function(r) { return r.nome.trim(); });
+  if (!respValidos.length) {
+    showToast('Informe pelo menos um Responsável Técnico.', 'error');
+    return;
+  }
+
+  const btn = e.submitter || document.querySelector('[type="submit"]');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Salvando...';
+
+  function parseTec(id) {
+    return selectedTechs[id] ? [...selectedTechs[id]] : [];
+  }
+
+  const payload = {
+    nome:              document.getElementById('nome').value.trim(),
+    descricao:         document.getElementById('descricao').value.trim(),
+    tipo:              document.getElementById('tipo').value,
+    status:            document.getElementById('status').value,
+    criticidade:       document.getElementById('criticidade').value,
+    secretaria:        document.getElementById('secretaria').value.trim(),
+    setor:             document.getElementById('setor').value.trim(),
+    resp_tec:          respTecList.filter(function(r) { return r.nome.trim(); }),
+    fornecedor: {
+      nome:     document.getElementById('forn_nome')?.value?.trim()     || null,
+      cnpj:     document.getElementById('forn_cnpj')?.value?.trim()     || null,
+      telefone: document.getElementById('forn_telefone')?.value?.trim() || null,
+      email:    document.getElementById('forn_email')?.value?.trim()    || null,
+    },
+    transf_secretaria: document.getElementById('transf_secretaria')?.value?.trim() || null,
+    transf_data:       document.getElementById('transf_data')?.value               || null,
+    convenio: {
+      nome:       document.getElementById('conv_nome')?.value?.trim()       || null,
+      cnpj:       document.getElementById('conv_cnpj')?.value?.trim()       || null,
+      referencia: document.getElementById('conv_referencia')?.value?.trim() || null,
+      valor:      document.getElementById('conv_valor')?.value              || null,
+      inicio:     document.getElementById('conv_inicio')?.value             || null,
+      fim:        document.getElementById('conv_fim')?.value                || null,
+    },
+    cessao: {
+      nome:       document.getElementById('cessao_nome')?.value?.trim()       || null,
+      cnpj:       document.getElementById('cessao_cnpj')?.value?.trim()       || null,
+      referencia: document.getElementById('cessao_referencia')?.value?.trim() || null,
+      data:       document.getElementById('cessao_data')?.value               || null,
+    },
+    outro_descricao: document.getElementById('outro_descricao')?.value?.trim() || null,
+    tecnologias:       [
+      ...parseTec('tec_frontend'),
+      ...parseTec('tec_backend'),
+      ...parseTec('tec_banco'),
+      ...parseTec('tec_api'),
+      ...parseTec('tec_infra'),
+    ],
+    banco_dados:       document.getElementById('banco_dados')?.value?.trim()    || null,
+    url_producao:      document.getElementById('url_prod')?.value?.trim()       || null,
+    url_homologacao:   document.getElementById('url_homo')?.value?.trim()       || null,
+    data_implantacao:  document.getElementById('data_impl')?.value              || null,
+    observacoes:       document.getElementById('observacoes')?.value?.trim()    || null,
+    origem:            document.getElementById('origem')?.value                 || null,
+    versao_atual:      document.getElementById('versao_atual')?.value?.trim()   || null,
+    contrato_numero:   document.getElementById('contrato_numero')?.value?.trim() || null,
+    contrato_inicio:   document.getElementById('contrato_inicio')?.value        || null,
+    contrato_fim:      document.getElementById('contrato_fim')?.value           || null,
+    contrato_valor:    document.getElementById('contrato_valor')?.value         || null,
+    hospedagem:        document.getElementById('hospedagem')?.value             || null,
+    acesso:            document.getElementById('acesso')?.value                 || null,
+  };
+
+  try {
+    const res = await apiFetch('/api/sistemas', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (!res) return;
+
+    localStorage.removeItem(RASCUNHO_KEY);
+
+    const token = getToken();
+    await Promise.all(Object.keys(DOCS_FIXOS).map(function(key) {
+      var d = DOCS_FIXOS[key];
+      if (!d.file) return Promise.resolve();
+      var fd = new FormData();
+      fd.append('tipo',    key);
+      fd.append('arquivo', d.file, d.fileName);
+      return fetch(API_BASE + '/api/sistemas/' + res.id + '/documentos', {
+        method: 'POST',
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+        body: fd,
+      });
+    }));
+
+    showToast(`Sistema "${res.nome}" cadastrado com sucesso! Código: ${res.codigo}`, 'success');
+    setTimeout(function () { window.location.href = 'sistemas.html'; }, 1800);
+  } catch (err) {
+    showToast(err.message || 'Erro ao salvar sistema', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-floppy"></i> Salvar Sistema';
+  }
+}
+
+function toggleOrigem() {
+  var origem = document.getElementById('origem').value;
+  ['interno','transferencia','licitacao','convenio','cessao','outro'].forEach(function(b) {
+    document.getElementById('bloco-' + b).style.display = 'none';
+  });
+  if (origem) document.getElementById('bloco-' + origem).style.display = 'block';
+  document.getElementById('alerta-vigencia').textContent = '';
+}
+
+function alertaVigencia() {
+  const fim    = document.getElementById('contrato_fim').value;
+  const aviso  = document.getElementById('alerta-vigencia');
+  if (!fim) { aviso.textContent = ''; return; }
+
+  const hoje   = new Date();
+  const venc   = new Date(fim + 'T00:00:00');
+  const dias   = Math.ceil((venc - hoje) / 86400000);
+
+  aviso.style.fontWeight = '600';
+  if (dias < 0) {
+    aviso.style.color = '#c81e1e';
+    aviso.textContent = '⚠ Contrato vencido há ' + Math.abs(dias) + ' dias';
+  } else if (dias <= 30) {
+    aviso.style.color = '#c27803';
+    aviso.textContent = '⚠ Vence em ' + dias + ' dia(s) — renovação urgente';
+  } else if (dias <= 90) {
+    aviso.style.color = '#c27803';
+    aviso.textContent = 'Vence em ' + dias + ' dias';
+  } else {
+    aviso.style.color = '#057a55';
+    aviso.textContent = 'Vigente — ' + dias + ' dias restantes';
+  }
+}
+
+function limparForm() {
+  localStorage.removeItem(RASCUNHO_KEY);
+  document.getElementById('data_registro').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('hospedagem').value = '';
+  document.getElementById('origem').value = '';
+  ['interno','transferencia','licitacao','convenio','cessao','outro'].forEach(function(b) {
+    document.getElementById('bloco-' + b).style.display = 'none';
+  });
+  document.getElementById('alerta-vigencia').textContent = '';
+  Object.keys(DOCS_FIXOS).forEach(function(k) {
+    DOCS_FIXOS[k].file = null; DOCS_FIXOS[k].fileName = ''; DOCS_FIXOS[k].fileSize = 0;
+    document.getElementById('doc-file-' + k).value = '';
+    atualizarDocCard(k);
+  });
+  respTecList = [{ nome: '', cpf: '' }];
+  renderRespTec();
+  Object.keys(TEC_CONF).forEach(function(id) {
+    selectedTechs[id] = [];
+    var sufixo = id.replace('tec_', '');
+    var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+    if (searchEl) searchEl.value = '';
+    renderTecPicker(id, '');
+  });
+  buscarProximoCodigo();
+}
+
+/* ---- Responsáveis Técnicos ---- */
+var respTecList = [{ nome: '', cpf: '' }];
+
+function maskCPF(v) {
+  return v.replace(/\D/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+    .slice(0, 14);
+}
+
+function maskCNPJ(v) {
+  return v.replace(/\D/g, '')
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+    .slice(0, 18);
+}
+
+function maskTelefone(v) {
+  v = v.replace(/\D/g, '').slice(0, 11);
+  if (v.length <= 10)
+    return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{4})(\d{1,4})/, '$1-$2');
+  return v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d{1,4})/, '$1-$2');
+}
+
+function renderRespTec() {
+  var lista = document.getElementById('resp-tec-lista');
+  lista.innerHTML = respTecList.map(function(r, i) {
+    var podeRemover = respTecList.length > 1;
+    return '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">'
+      + '<input type="text" class="form-control" placeholder="Nome completo" value="' + (r.nome || '') + '"'
+      +   ' oninput="respTecList[' + i + '].nome=this.value;salvarRascunho()">'
+      + '<input type="text" class="form-control" placeholder="000.000.000-00" value="' + (r.cpf || '') + '"'
+      +   ' maxlength="14" style="width:160px;flex-shrink:0;"'
+      +   ' oninput="respTecList[' + i + '].cpf=this.value=maskCPF(this.value);salvarRascunho()">'
+      + (podeRemover
+          ? '<button type="button" class="btn btn-secondary btn-sm" style="flex-shrink:0;" onclick="removeRespTec(' + i + ')"><i class="bi bi-x"></i></button>'
+          : '')
+      + '</div>';
+  }).join('');
+}
+
+function addRespTec() {
+  respTecList.push({ nome: '', cpf: '' });
+  renderRespTec();
+  salvarRascunho();
+  var entradas = document.querySelectorAll('#resp-tec-lista input[type="text"]');
+  var ultimo   = entradas[entradas.length - 2];
+  if (ultimo) ultimo.focus();
+}
+
+function removeRespTec(idx) {
+  respTecList.splice(idx, 1);
+  renderRespTec();
+  salvarRascunho();
+}
+
+renderRespTec();
+
+/* ---- Seletor de tecnologias ---- */
+const TEC_CONF = {
+  tec_frontend: { cor: '#1a56db', fundo: '#e8f0fe', opcoes: ['HTML','CSS','JavaScript','TypeScript','WebAssembly','SVG','JSON','XML','React','Vue.js','Angular','Svelte','Next.js','Nuxt','SvelteKit','Astro','jQuery','Alpine.js','Lit','Ember.js','Backbone.js','Preact','SolidJS','Qwik','Bootstrap','Tailwind CSS','Sass/SCSS','Less','Material UI','Ant Design','Chakra UI','Radix UI','shadcn/ui','Bulma','Foundation','Angular Material','Vuetify','PrimeReact','PrimeVue','PrimeNG'] },
+  tec_backend:  { cor: '#057a55', fundo: '#dcfce7', opcoes: ['PHP','Java','C#','JavaScript','TypeScript','Python','Ruby','Go','Kotlin','Scala','Rust','Elixir','Node.js','.NET','JVM','Laravel','Symfony','CodeIgniter','Spring Boot','Jakarta EE','Java EE','Struts','ASP.NET Core','ASP.NET MVC','Express','NestJS','Fastify','Koa','Django','Flask','FastAPI','Ruby on Rails','Sinatra','Gin','Fiber','Echo','Ktor','Play Framework','Phoenix','Actix Web'] },
+  tec_banco:    { cor: '#b45309', fundo: '#fef3c7', opcoes: ['MySQL','MariaDB','PostgreSQL','Oracle Database','Microsoft SQL Server','SQLite','Firebird','IBM Db2','SAP HANA','Sybase / SAP ASE','Microsoft Access','MongoDB','CouchDB','Couchbase','RavenDB','Firebase Realtime Database','Cloud Firestore','Amazon DynamoDB','Cassandra','ScyllaDB','HBase','Redis','Memcached','Elasticsearch','OpenSearch','Solr','Neo4j','ArangoDB','OrientDB','JanusGraph','InfluxDB','TimescaleDB','Prometheus','ClickHouse','Apache Druid','Snowflake','Google BigQuery','Amazon Redshift','Azure Cosmos DB','CockroachDB','TiDB','YugabyteDB','PlanetScale','Supabase Database','FaunaDB','Realm Database','IndexedDB','LocalStorage','DuckDB','H2 Database'] },
+  tec_api:      { cor: '#6c2bd9', fundo: '#ede9fe', opcoes: ['REST','SOAP','GraphQL','gRPC','Webhooks','WebSocket','Server-Sent Events','JSON-RPC','XML-RPC','OData','OpenAPI / Swagger','Postman','Insomnia','Hoppscotch','cURL','OAuth 2.0','OpenID Connect','SAML','JWT','API Key','Basic Auth','Bearer Token','mTLS','Apache Kafka','RabbitMQ','ActiveMQ','NATS','MQTT','AMQP','Redis Pub/Sub','Redis Streams','Amazon SQS','Amazon SNS','Google Pub/Sub','Azure Service Bus','Apache Camel','MuleSoft','WSO2','Kong Gateway','NGINX API Gateway','Apigee','AWS API Gateway','Azure API Management','Tyk','Traefik','Zapier','Make / Integromat','n8n','Power Automate','IFTTT','Workato','Dell Boomi','Talend','Pentaho Data Integration','Airbyte','Fivetran','Apache NiFi','Logstash','Fluentd','Filebeat','SMTP','IMAP','POP3','FTP','SFTP','FTPS','SSH','LDAP','Active Directory','Microsoft Graph API','Google APIs','Google Maps API','Google Drive API','Google Sheets API','Gmail API','GOV.BR API','Receita Federal APIs','Banco Central APIs','PIX API','Open Finance APIs'] },
+  tec_infra:    { cor: '#0e7490', fundo: '#cffafe', opcoes: ['Linux','Ubuntu Server','Debian','CentOS','Red Hat Enterprise Linux','Windows Server','Nginx','Apache HTTP Server','IIS','Tomcat','PM2','systemd','Docker','Docker Compose','Kubernetes','Helm','Terraform','Ansible','Jenkins','GitHub Actions','GitLab CI/CD','cPanel','Plesk','Traefik','HAProxy','Cloudflare','Certbot','Let\'s Encrypt','OpenSSL','Fail2ban','UFW','iptables','SSH','SFTP','Rsync','SCP','Git','GitHub','GitLab','Bitbucket','Docker Hub','AWS EC2','AWS S3','AWS RDS','AWS CloudFront','AWS Route 53','Azure Virtual Machines','Google Cloud Compute Engine','Heroku','Grafana'] },
+};
+
+const selectedTechs = {
+  tec_frontend: [], tec_backend: [], tec_banco: [], tec_api: [], tec_infra: []
+};
+
+function renderTecPicker(fieldId, filtro) {
+  var conf   = TEC_CONF[fieldId];
+  var sel    = selectedTechs[fieldId];
+  var sufixo = fieldId.replace('tec_', '');
+  var f      = (filtro || '').toLowerCase().trim();
+  var optsEl = document.getElementById('opts-' + sufixo);
+
+  if (!f) {
+    optsEl.innerHTML = '';
+  } else {
+    var disponiveis = conf.opcoes.filter(function(o) {
+      return !sel.includes(o) && o.toLowerCase().includes(f);
+    });
+    var outroBotao = '<span class="tec-opt"'
+      + ' style="border-color:#6b7280;color:#6b7280;border-style:dashed;"'
+      + ' onmouseenter="this.style.background=\'#f3f4f6\'"'
+      + ' onmouseleave="this.style.background=\'transparent\'"'
+      + ' onclick="abrirOutro(\'' + fieldId + '\')">+ Outro</span>';
+    optsEl.innerHTML = disponiveis.map(function(o) {
+        return '<span class="tec-opt"'
+          + ' style="border-color:' + conf.cor + ';color:' + conf.cor + ';"'
+          + ' onmouseenter="this.style.background=\'' + conf.fundo + '\'"'
+          + ' onmouseleave="this.style.background=\'transparent\'"'
+          + ' onclick="selecionarTec(\'' + fieldId + '\',\'' + o.replace(/'/g, "\\'") + '\')">'
+          + o + '</span>';
+      }).join('') + outroBotao;
+  }
+
+  var tagsEl = document.getElementById('tags-' + sufixo);
+  tagsEl.innerHTML = sel.map(function(v, i) {
+    return '<span class="tec-tag" style="background:' + conf.fundo + ';color:' + conf.cor + ';">'
+      + v
+      + '<i class="tec-tag-x" onclick="removerTecTag(\'' + fieldId + '\',' + i + ')" title="Remover">×</i>'
+      + '</span>';
+  }).join('');
+}
+
+function selecionarTec(fieldId, valor) {
+  if (!selectedTechs[fieldId].includes(valor)) selectedTechs[fieldId].push(valor);
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (searchEl) searchEl.value = '';
+  renderTecPicker(fieldId, '');
+  salvarRascunho();
+}
+
+function removerTecTag(fieldId, idx) {
+  selectedTechs[fieldId].splice(idx, 1);
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  renderTecPicker(fieldId, searchEl ? searchEl.value : '');
+  salvarRascunho();
+}
+
+function abrirOutro(fieldId) {
+  var sufixo = fieldId.replace('tec_', '');
+  var optsEl = document.getElementById('opts-' + sufixo);
+  optsEl.innerHTML =
+    '<div style="display:flex;gap:8px;align-items:center;width:100%;">'
+    + '<input type="text" id="outro-input-' + sufixo + '" class="form-control"'
+    +   ' placeholder="Nome da tecnologia..." autocomplete="off" style="flex:1;">'
+    + '<button type="button" class="btn btn-primary btn-sm"'
+    +   ' onclick="confirmarOutro(\'' + fieldId + '\')">Adicionar</button>'
+    + '<button type="button" class="btn btn-secondary btn-sm"'
+    +   ' onclick="cancelarOutro(\'' + fieldId + '\')"><i class="bi bi-x"></i></button>'
+    + '</div>';
+  var input = document.getElementById('outro-input-' + sufixo);
+  if (input) {
+    input.focus();
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter')  { e.preventDefault(); confirmarOutro(fieldId); }
+      if (e.key === 'Escape') { cancelarOutro(fieldId); }
+    });
+  }
+}
+
+function confirmarOutro(fieldId) {
+  var sufixo   = fieldId.replace('tec_', '');
+  var input    = document.getElementById('outro-input-' + sufixo);
+  var val      = input ? input.value.trim() : '';
+  if (val && !selectedTechs[fieldId].includes(val)) selectedTechs[fieldId].push(val);
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (searchEl) searchEl.value = '';
+  renderTecPicker(fieldId, '');
+  salvarRascunho();
+}
+
+function cancelarOutro(fieldId) {
+  var sufixo   = fieldId.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  renderTecPicker(fieldId, searchEl ? searchEl.value : '');
+}
+
+Object.keys(TEC_CONF).forEach(function(id) {
+  var sufixo   = id.replace('tec_', '');
+  var searchEl = document.querySelector('#picker-' + sufixo + ' .tec-search');
+  if (!searchEl) return;
+  searchEl.addEventListener('input', function() { renderTecPicker(id, this.value); });
+  searchEl.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    var val = this.value.trim();
+    if (val && !selectedTechs[id].includes(val)) {
+      selectedTechs[id].push(val);
+      this.value = '';
+      renderTecPicker(id, '');
+      salvarRascunho();
+    }
+  });
+  renderTecPicker(id, '');
+});
+
+/* ---- Documentação — 3 documentos fixos ---- */
+var DOCS_FIXOS = {
+  tecnica:     { label: 'Documentação Técnica Descritiva',        file: null, fileName: '', fileSize: 0 },
+  implantacao: { label: 'Documentação de Implantação e Operação', file: null, fileName: '', fileSize: 0 },
+  autoria:     { label: 'Documentação para Registro/Autoria',     file: null, fileName: '', fileSize: 0 },
+};
+
+function formatBytes(b) {
+  if (!b) return '';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+function atualizarDocCard(key) {
+  var d        = DOCS_FIXOS[key];
+  var card     = document.getElementById('doc-card-' + key);
+  var uploadEl = document.getElementById('doc-upload-' + key);
+  var infoEl   = document.getElementById('doc-info-' + key);
+
+  if (d.fileName) {
+    uploadEl.style.display = 'none';
+    infoEl.style.display   = 'flex';
+    document.getElementById('doc-filename-' + key).textContent = d.fileName;
+    document.getElementById('doc-filesize-' + key).textContent = formatBytes(d.fileSize);
+    if (d.file) {
+      card.style.borderColor = '#86efac';
+      card.style.background  = '#f0fdf4';
+    } else {
+      card.style.borderColor = '#fcd34d';
+      card.style.background  = '#fffbeb';
+      document.getElementById('doc-filesize-' + key).innerHTML =
+        formatBytes(d.fileSize) + ' &nbsp;<span style="color:#d97706;font-weight:600;font-size:11px;"><i class="bi bi-exclamation-triangle"></i> selecione o arquivo novamente</span>';
+    }
+  } else {
+    uploadEl.style.display = '';
+    infoEl.style.display   = 'none';
+    card.style.borderColor = '#e2e8f0';
+    card.style.background  = '#f8fafc';
+  }
+}
+
+function onDocChange(key, input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+    showToast('Apenas arquivos PDF são aceitos.', 'error');
+    input.value = '';
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('O arquivo excede o limite de 10 MB.', 'error');
+    input.value = '';
+    return;
+  }
+  DOCS_FIXOS[key].file     = file;
+  DOCS_FIXOS[key].fileName = file.name;
+  DOCS_FIXOS[key].fileSize = file.size;
+  atualizarDocCard(key);
+  salvarRascunho();
+}
+
+function removerDocFixo(key) {
+  DOCS_FIXOS[key].file     = null;
+  DOCS_FIXOS[key].fileName = '';
+  DOCS_FIXOS[key].fileSize = 0;
+  document.getElementById('doc-file-' + key).value = '';
+  atualizarDocCard(key);
+  salvarRascunho();
+}
+
+/* ---- Rascunho automático (localStorage) ---- */
+var RASCUNHO_KEY = 'gsis_novo_sistema_rascunho';
+
+function salvarRascunho() {
+  function g(id) { var e = document.getElementById(id); return e ? e.value : ''; }
+  try {
+    localStorage.setItem(RASCUNHO_KEY, JSON.stringify({
+      nome:              g('nome'),
+      descricao:         g('descricao'),
+      tipo:              g('tipo'),
+      status:            g('status'),
+      criticidade:       g('criticidade'),
+      data_impl:         g('data_impl'),
+      secretaria:        g('secretaria'),
+      setor:             g('setor'),
+      origem:            g('origem'),
+      versao_atual:      g('versao_atual'),
+      forn_nome:         g('forn_nome'),
+      forn_cnpj:         g('forn_cnpj'),
+      forn_telefone:     g('forn_telefone'),
+      forn_email:        g('forn_email'),
+      contrato_numero:   g('contrato_numero'),
+      contrato_valor:    g('contrato_valor'),
+      contrato_inicio:   g('contrato_inicio'),
+      contrato_fim:      g('contrato_fim'),
+      transf_secretaria: g('transf_secretaria'),
+      transf_data:       g('transf_data'),
+      conv_nome:         g('conv_nome'),
+      conv_cnpj:         g('conv_cnpj'),
+      conv_referencia:   g('conv_referencia'),
+      conv_valor:        g('conv_valor'),
+      conv_inicio:       g('conv_inicio'),
+      conv_fim:          g('conv_fim'),
+      cessao_nome:       g('cessao_nome'),
+      cessao_cnpj:       g('cessao_cnpj'),
+      cessao_referencia: g('cessao_referencia'),
+      cessao_data:       g('cessao_data'),
+      outro_descricao:   g('outro_descricao'),
+      hospedagem:        g('hospedagem'),
+      acesso:            g('acesso'),
+      url_prod:          g('url_prod'),
+      url_homo:          g('url_homo'),
+      observacoes:       g('observacoes'),
+      respTecList:       respTecList,
+      selectedTechs:     selectedTechs,
+      documentos: (function() {
+        var out = {};
+        Object.keys(DOCS_FIXOS).forEach(function(k) {
+          var d = DOCS_FIXOS[k];
+          if (d.fileName) out[k] = { fileName: d.fileName, fileSize: d.fileSize };
+        });
+        return out;
+      })(),
+    }));
+  } catch(e) {}
+}
+
+function restaurarRascunho() {
+  var raw = localStorage.getItem(RASCUNHO_KEY);
+  if (!raw) return;
+  var d;
+  try { d = JSON.parse(raw); } catch(e) { return; }
+
+  function s(id, v) {
+    var el = document.getElementById(id);
+    if (el && v != null && v !== '') el.value = v;
+  }
+
+  s('nome',         d.nome);
+  s('descricao',    d.descricao);
+  s('tipo',         d.tipo);
+  s('status',       d.status);
+  s('criticidade',  d.criticidade);
+  s('data_impl',    d.data_impl);
+  s('secretaria',   d.secretaria);
+  s('setor',        d.setor);
+  s('versao_atual', d.versao_atual);
+  s('hospedagem',   d.hospedagem);
+  s('acesso',       d.acesso);
+  s('url_prod',     d.url_prod);
+  s('url_homo',     d.url_homo);
+  s('observacoes',  d.observacoes);
+
+  if (d.origem) {
+    s('origem', d.origem);
+    toggleOrigem();
+    s('forn_nome',         d.forn_nome);
+    s('forn_cnpj',         d.forn_cnpj);
+    s('forn_telefone',     d.forn_telefone);
+    s('forn_email',        d.forn_email);
+    s('contrato_numero',   d.contrato_numero);
+    s('contrato_valor',    d.contrato_valor);
+    s('contrato_inicio',   d.contrato_inicio);
+    s('contrato_fim',      d.contrato_fim);
+    s('transf_secretaria', d.transf_secretaria);
+    s('transf_data',       d.transf_data);
+    s('conv_nome',         d.conv_nome);
+    s('conv_cnpj',         d.conv_cnpj);
+    s('conv_referencia',   d.conv_referencia);
+    s('conv_valor',        d.conv_valor);
+    s('conv_inicio',       d.conv_inicio);
+    s('conv_fim',          d.conv_fim);
+    s('cessao_nome',       d.cessao_nome);
+    s('cessao_cnpj',       d.cessao_cnpj);
+    s('cessao_referencia', d.cessao_referencia);
+    s('cessao_data',       d.cessao_data);
+    s('outro_descricao',   d.outro_descricao);
+    alertaVigencia();
+  }
+
+  if (d.respTecList && d.respTecList.length) {
+    respTecList = d.respTecList;
+    renderRespTec();
+  }
+
+  if (d.selectedTechs) {
+    Object.keys(d.selectedTechs).forEach(function(id) {
+      if (Object.prototype.hasOwnProperty.call(selectedTechs, id)) {
+        selectedTechs[id] = d.selectedTechs[id] || [];
+        renderTecPicker(id, '');
+      }
+    });
+  }
+
+  if (d.documentos) {
+    Object.keys(d.documentos).forEach(function(k) {
+      if (DOCS_FIXOS[k]) {
+        DOCS_FIXOS[k].file     = null;
+        DOCS_FIXOS[k].fileName = d.documentos[k].fileName || '';
+        DOCS_FIXOS[k].fileSize = d.documentos[k].fileSize || 0;
+        atualizarDocCard(k);
+      }
+    });
+  }
+}
+
+[
+  'nome','descricao','tipo','status','criticidade','data_impl',
+  'secretaria','setor','origem','versao_atual',
+  'forn_nome','forn_cnpj','forn_telefone','forn_email',
+  'contrato_numero','contrato_valor','contrato_inicio','contrato_fim',
+  'transf_secretaria','transf_data',
+  'conv_nome','conv_cnpj','conv_referencia','conv_valor','conv_inicio','conv_fim',
+  'cessao_nome','cessao_cnpj','cessao_referencia','cessao_data',
+  'outro_descricao','hospedagem','acesso','url_prod','url_homo','observacoes'
+].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input',  salvarRascunho);
+  el.addEventListener('change', salvarRascunho);
+});
+
+restaurarRascunho();
+</script>
+</body>
+</html>
+
+
