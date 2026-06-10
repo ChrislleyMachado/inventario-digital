@@ -90,10 +90,7 @@ function renderTable(data) {
     const pendenciaIcon = pendencias.length
       ? `<span class="pendencia-icon">
            <i class="bi bi-exclamation-triangle-fill"></i>
-           <span class="pendencia-tooltip">
-             <strong>Pendências</strong>
-             ${pendencias.map(p => `<span>${p}</span>`).join('')}
-           </span>
+           <span class="pendencia-tooltip"><strong>Pendências</strong>${pendencias.map(p => `<span>${p}</span>`).join('')}</span>
          </span>`
       : '';
 
