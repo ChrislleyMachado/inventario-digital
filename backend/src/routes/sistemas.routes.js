@@ -68,6 +68,7 @@ router.get('/', async (req, res) => {
     const [rows] = await pool.query(
       `SELECT s.id, s.codigo, s.nome, s.descricao, sec.nome AS secretaria,
               s.status, s.criticidade, s.resp_tec, s.tecnologias, s.data_implantacao,
+              s.hospedagem, s.acesso, s.versao_atual,
               ${PENDENTE_COND} AS incompleto
        FROM sistemas s
        LEFT JOIN secretarias sec ON sec.id = s.secretaria_id

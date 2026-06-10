@@ -635,3 +635,71 @@
   .code-preview-value .codigo-seq { padding: 8px 12px; }
   .config-row { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
+
+/* ---- Ícone de pendência com tooltip na listagem ---- */
+.pendencia-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 7px;
+  color: #d97706;
+  font-size: 13px;
+  vertical-align: middle;
+  cursor: default;
+}
+
+.pendencia-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #f1f5f9;
+  border-radius: 8px;
+  padding: 9px 13px;
+  min-width: 175px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  z-index: 200;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  pointer-events: none;
+}
+
+.pendencia-tooltip strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #fbbf24;
+}
+
+.pendencia-tooltip span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 0;
+  font-size: 12px;
+}
+
+.pendencia-tooltip span::before {
+  content: '•';
+  color: #f59e0b;
+  font-size: 10px;
+}
+
+.pendencia-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1e293b;
+}
+
+.pendencia-icon:hover .pendencia-tooltip {
+  display: block;
+}

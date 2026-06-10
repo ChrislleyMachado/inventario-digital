@@ -79,14 +79,28 @@ function renderTable(data) {
   }
 
   tbody.innerHTML = data.map(function (s) {
-    const desc          = (s.descricao || '').substring(0, 52) + ((s.descricao || '').length > 52 ? '...' : '');
-    const pendenteBadge = s.incompleto
-      ? `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:1px 7px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:12px;font-size:10.5px;font-weight:600;vertical-align:middle;"><i class="bi bi-exclamation-triangle-fill" style="font-size:9px;"></i> Pendente</span>`
+    const desc      = (s.descricao || '').substring(0, 52) + ((s.descricao || '').length > 52 ? '...' : '');
+    const pendencias = [];
+    if (!s.tecnologias || !s.tecnologias.length) pendencias.push('Tecnologias');
+    if (!s.hospedagem)       pendencias.push('Hospedagem');
+    if (!s.acesso)           pendencias.push('Tipo de Acesso');
+    if (!s.versao_atual)     pendencias.push('Versão Atual');
+    if (!s.data_implantacao) pendencias.push('Data de Implantação');
+
+    const pendenciaIcon = pendencias.length
+      ? `<span class="pendencia-icon">
+           <i class="bi bi-exclamation-triangle-fill"></i>
+           <span class="pendencia-tooltip">
+             <strong>Pendências</strong>
+             ${pendencias.map(p => `<span>${p}</span>`).join('')}
+           </span>
+         </span>`
       : '';
+
     return `<tr>
       <td>${formatCodigo(s.codigo)}</td>
       <td class="td-nome">
-        <strong>${s.nome}</strong>${pendenteBadge}
+        <strong>${s.nome}</strong>${pendenciaIcon}
         <span>${desc}</span>
       </td>
       <td>${s.secretaria || '—'}</td>
